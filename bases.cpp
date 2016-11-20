@@ -70,11 +70,8 @@ int Database::Save_file_trunc(){
         return 0;
     for(int i = 0; i < base.size(); i++){
         for(int y = 0; y < num_columns; y++)
-            if(y == num_columns - 1){
+            if(y == num_columns - 1)
                 output << base[i][y];
-                cout << base[i][y];
-                cin.get();
-            }
             else
                 output << base[i][y] << '\t';
         output << endl;
@@ -88,14 +85,9 @@ int Database::Save_file_trunc(string name){
     if(!output.is_open())
         return 0;
     for(int i = 0; i < base.size(); i++){
-            cout << base.size();
-            cin.get();
         for(int y = 0; y < num_columns; y++)
-            if(y == num_columns - 1){
+            if(y == num_columns - 1)
                 output << base[i][y];
-                cout << base[i][y];
-                cin.get();
-            }
             else
                 output << base[i][y] << '\t';
         output << endl;
