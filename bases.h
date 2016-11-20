@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cstring>
+#include <string>
 #include <iomanip>
 #include <fstream>
 #include <cstring>
@@ -17,6 +18,7 @@ private:
     string temp;
     vector <int> column_width;
     int counter;
+    int max_width;
     int num_columns;
     bool size_set;
     bool width_set;
@@ -24,6 +26,7 @@ private:
 public:
     Database();
     Database(string);
+    int Give_num_columns();
     int Read_file();
     int Save_file_trunc();
     int Save_file_trunc(string);
@@ -31,9 +34,8 @@ public:
     bool Check_name();
     bool Check_read();
     bool Change_name(string);
-    void Print_read();
+    void Add_single_row();
     void Fine_print();
     void Gotoxy(int,int);
-
-
+    void Print_read();
 };

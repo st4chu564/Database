@@ -26,7 +26,8 @@ int main(){
     cout << "\t6. Zakonczyc prace" << endl;
     cin >> a;
     switch(a){
-        case 1: if(!baza->Check_name()){
+        case 1: {
+            if(!baza->Check_name()){
             cout << "Podaj nazwe pliku: ";
             cin >> temp;
             baza->Change_name(temp);
@@ -41,46 +42,48 @@ int main(){
             cin.get();
             cin.get();
             break;
-        case 2: baza->Print_read();
-            cin.get();
-            break;
-        case 3: cout << "Edytowanie" << endl;
+        }
+        case 2: {
             baza->Print_read();
-            baza->Gotoxy(x,y);
-            do{
-                get_temp = getch();
-                if(get_temp == 224)
-                    get_temp = getch();
-                if(get_temp == UP && y > 1){
-                    y--;
-                    baza->Gotoxy(x,y);
+            cin.get();
+            break;
+        }
+        case 3: {
+            cout << "\t\t\t Edytowanie" << endl;
+            system("cls");
+            fflush(stdin);
+            cout << "\t\t 1. Dodaj pojedynczy rekord" << endl;
+            cout << "\t\t 2. Dodaj wiele rekordow" << endl;
+            cout << "\t\t 3. Powrot do glownego menu" << endl;
+            int* temp_switch = new int;
+            cin >> *temp_switch;
+            cin.ignore();
+            switch(*temp_switch){
+                case 1:{
+                    baza->Add_single_row();
+                    break;
                 }
-                else if(get_temp == DOWN && y < 100){
-                    y++;
-                    baza->Gotoxy(x,y);
+                case 2:{
+                    cout << "Placeholder, tu pojawi sie cos pozniej" << endl;
+                    break;
                 }
-                else if(get_temp == LEFT && x > 1){
-                    x--;
-                    baza->Gotoxy(x,y);
+                case 3:{
+                    cout << "Powrot do glownego menu" << endl;
+                    break;
                 }
-                else if(get_temp == RIGHT && x < 100){
-                    x++;
-                    baza->Gotoxy(x,y);
-                }
-                else{
-                    cout << cin.get();
-                    cin.clear();
-                    cin.sync();
-                }
-            }while(get_temp != ESC);
+            }
+            getch();
+            delete temp_switch;
+            break;
+        }
+        case 4: {
+            cout << "Wyswietlanie" << endl;
             cin.get();
             cin.get();
             break;
-        case 4: cout << "Wyswietlanie" << endl;
-            cin.get();
-            cin.get();
-            break;
-        case 5: system("cls");
+        }
+        case 5: {
+            system("cls");
             cout << "\t1. Zapis do tego samego pliku z zastapieniem" << endl;
             cout << "\t2. Zapis do innego pliku" << endl;
 
@@ -115,12 +118,15 @@ int main(){
 
             }
             break;
+        }
         case 6: exit;
         break;
-        default: cout << "Nie poprawna opcja, podaj jeszcze raz" << endl;
+        default: {
+            cout << "Nie poprawna opcja, podaj jeszcze raz" << endl;
             cin.get();
             cin.get();
             break;
+        }
     }
         cin.clear();
         cin.sync();
