@@ -10,18 +10,20 @@ using namespace std;
 
 int main(){
     Database* baza;
-    string temp;
+    string temp, temp_name;
     int get_temp;
-    int x = 1, y = 2;
-    baza = new Database;
-    while(true){
-    int a;
+    int x = 1, y = 2,a;
+    baza = new Database("baza.txt");
+    while(a != 6){
+    int *sw_number = new int;
+    int *error = new int;
     cout << "\tCo chcesz robic?" << endl;
     cout << "\t1. Wczytac plik" << endl;
     cout << "\t2. Wyswietlic plik" << endl;
     cout << "\t3. Edytowac plik" << endl;
     cout << "\t4. Wyswietlanie szczegolowe" << endl;
-    cout << "\t5. Zakonczyc prace" << endl;
+    cout << "\t5. Zapisanie pliku" << endl;
+    cout << "\t6. Zakonczyc prace" << endl;
     cin >> a;
     switch(a){
         case 1: if(!baza->Check_name()){
@@ -78,8 +80,43 @@ int main(){
             cin.get();
             cin.get();
             break;
-        case 5: return 1;
+        case 5: system("cls");
+            cout << "\t1. Zapis do tego samego pliku z zastapieniem" << endl;
+            cout << "\t2. Zapis do innego pliku" << endl;
+
+            cin >> *sw_number;
+            switch(*sw_number){
+                case 1: if(baza->Check_read()){
+                cout << "Zapisywanie, z zastapieniem poprzednich danych" << endl;
+                *error = baza->Save_file_trunc();
+                if(*error == 1)
+                    cout << "Zapis udany" << endl;
+                else if (*error == 0)
+                    cout << "Blad otwarcia, nie zapisano nic";
+                }
+                else{
+                    *error = baza->Save_file_trunc();
+                if(*error == 1)
+                    cout << "Zapis udany" << endl;
+                else if (*error == 0)
+                    cout << "Blad otwarcia, nie zapisano nic";
+                }
+
+                delete error;
+                break;
+                case 2: cout << "Podaj nazwe pliku i rozszerzenie: ";
+                cin >> temp_name;
+                *error = baza->Save_file_trunc(temp_name);
+                if(*error == 1)
+                    cout << "Zapis udany" << endl;
+                else if (*error == 0)
+                    cout << "Blad otwarcia, nie zapisano nic";
+                break;
+
+            }
             break;
+        case 6: exit;
+        break;
         default: cout << "Nie poprawna opcja, podaj jeszcze raz" << endl;
             cin.get();
             cin.get();
@@ -90,5 +127,5 @@ int main(){
         system("cls");
     }
     delete baza;
-
+    return 1;
 }

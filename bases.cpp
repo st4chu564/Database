@@ -4,19 +4,18 @@ using namespace std;
 Database::Database(){
     file_name = "";
     num_columns = 0;
-    num_rows = 0;
     counter = 0;
     size_set = false;
     width_set = false;
-
+    file_read = false;
 };
 Database::Database(string name){
     file_name = name;
     num_columns = 0;
-    num_rows = 0;
     counter = 0;
     size_set = false;
     width_set = false;
+    file_read = false;
 };
 int Database::Read_file(){
     ifstream input;
@@ -61,6 +60,37 @@ int Database::Read_file(){
         input.get(ch);
     }
     input.close();
+    file_read = true;
+    return 1;
+};
+int Database::Save_file_trunc(){
+    ofstream output;
+    output.open(file_name.c_str(), std::ofstream::trunc);
+    if(!output.is_open())
+        return 0;
+    for(int i = 0; i < base.size(); i++){
+        for(int y = 0; y < num_columns; y++)
+            if(y = num_columns - 1)
+                output << base[i][y];
+            else
+                output << base[i][y] << '\t';
+        output << endl;
+    }
+    return 1;
+};
+int Database::Save_file_trunc(string name){
+    ofstream output;
+    output.open(name.c_str(), std::ofstream::trunc);
+    if(!output.is_open())
+        return 0;
+    for(int i = 0; i < base.size(); i++){
+        for(int y = 0; y < num_columns; y++)
+            if(y = num_columns - 1)
+                output << base[i][y];
+            else
+                output << base[i][y] << '\t';
+        output << endl;
+    }
     return 1;
 };
 bool Database::Check_name(){
@@ -70,6 +100,9 @@ bool Database::Check_name(){
     else{
         return true;
     }
+};
+bool Database::Check_read(){
+    return file_read;
 };
 bool Database::Change_name(string name){
     file_name = name;

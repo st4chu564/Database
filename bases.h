@@ -18,14 +18,18 @@ private:
     vector <int> column_width;
     int counter;
     int num_columns;
-    int num_rows;
     bool size_set;
     bool width_set;
+    bool file_read;
 public:
     Database();
     Database(string);
     int Read_file();
+    int Save_file_trunc();
+    int Save_file_trunc(string);
+    int Seve_file_add();
     bool Check_name();
+    bool Check_read();
     bool Change_name(string);
     void Print_read();
     void Fine_print();
