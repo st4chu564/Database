@@ -9,30 +9,30 @@
 using namespace std;
 
 int main(){
-    Database* baza;
-    string temp, temp_name;
-    int get_temp;
+    Database* baza = NULL;
+    string temp, tempName;
     int x = 1, y = 2,a;
-    baza = new Database("baza.txt");
-    while(a != 6){
-    int *sw_number = new int;
+    while(a != 7){
+    int *swNumber = new int;
     int *error = new int;
     cout << "\tCo chcesz robic?" << endl;
     cout << "\t1. Wczytac plik" << endl;
-    cout << "\t2. Wyswietlic plik" << endl;
-    cout << "\t3. Edytowac plik" << endl;
-    cout << "\t4. Wyswietlanie szczegolowe" << endl;
-    cout << "\t5. Zapisanie pliku" << endl;
-    cout << "\t6. Zakonczyc prace" << endl;
+    cout << "\t2. Stworzyc nowy plik" << endl;
+    cout << "\t3. Wyswietlic plik" << endl;
+    cout << "\t4. Edytowac plik" << endl;
+    cout << "\t5. Wyswietlanie szczegolowe" << endl;
+    cout << "\t6. Zapisanie pliku" << endl;
+    cout << "\t7. Zakonczyc prace" << endl;
     cin >> a;
     switch(a){
         case 1: {
-            if(!baza->Check_name()){
+            if(baza == NULL){
             cout << "Podaj nazwe pliku: ";
             cin >> temp;
-            baza->Change_name(temp);
+            baza = new Database(temp);
+            baza->changeName(temp);
             }
-            if(baza->Read_file() == 1)
+            if(baza->readFile() == 1)
             cout << "Wczytano poprawnie" << endl;
             else{
             cout << "Blad wczytywania" << endl;
@@ -44,61 +44,85 @@ int main(){
             break;
         }
         case 2: {
-            baza->Print_read();
+            cout << "Podaj nazwe pliku i rozszerzenie: ";
+            cin >> temp;
+            baza = new Database(temp);
+            baza->addMultipleRows();
+        }
+        case 3: {
+            if(baza == NULL)
+                cout << "Nie utworzony bazy, nie ma co wyswietlic" << endl;
+            else
+                baza->printRead();
+            cin.sync();
+            cin.clear();
             cin.get();
             break;
         }
-        case 3: {
+        case 4: {
+            if(baza == NULL){
+                cout << "Nie utworzono bazy, nie mozna edytowac" << endl;
+                cin.sync();
+                cin.clear();
+                cin.get();
+                break;
+            }
             cout << "\t\t\t Edytowanie" << endl;
             system("cls");
             fflush(stdin);
             cout << "\t\t 1. Dodaj pojedynczy rekord" << endl;
             cout << "\t\t 2. Dodaj wiele rekordow" << endl;
             cout << "\t\t 3. Powrot do glownego menu" << endl;
-            int* temp_switch = new int;
-            cin >> *temp_switch;
+            char* tempSwitch = new char;
+            cin >> *tempSwitch;
             cin.ignore();
-            switch(*temp_switch){
-                case 1:{
-                    baza->Add_single_row();
+            switch(*tempSwitch){
+                case '1':{
+                    baza->addRow();
                     break;
                 }
-                case 2:{
-                    cout << "Placeholder, tu pojawi sie cos pozniej" << endl;
+                case '2':{
+                    do{
+                        baza->addRow();
+                        cout << "Chcesz dodac nastepna linie? (t/n)";
+                        *tempSwitch = getch();
+                        if(tolower(*tempSwitch) != 't' && tolower(*tempSwitch) != 'n')
+                            cout << "Odpowiedz nie rozpoznana, konczenie pracy" << endl;
+                    }while(tolower(*tempSwitch) == 't');
                     break;
                 }
-                case 3:{
+                case '3':{
                     cout << "Powrot do glownego menu" << endl;
                     break;
                 }
             }
             getch();
-            delete temp_switch;
+            delete tempSwitch;
             break;
         }
-        case 4: {
+        case 5: {
             cout << "Wyswietlanie" << endl;
             cin.get();
             cin.get();
             break;
         }
-        case 5: {
+        case 6: {
             system("cls");
             cout << "\t1. Zapis do tego samego pliku z zastapieniem" << endl;
             cout << "\t2. Zapis do innego pliku" << endl;
 
-            cin >> *sw_number;
-            switch(*sw_number){
-                case 1: if(baza->Check_read()){
+            cin >> *swNumber;
+            switch(*swNumber){
+                case 1: if(baza->checkRead()){
                 cout << "Zapisywanie, z zastapieniem poprzednich danych" << endl;
-                *error = baza->Save_file_trunc();
+                *error = baza->saveFileTrunc();
                 if(*error == 1)
                     cout << "Zapis udany" << endl;
                 else if (*error == 0)
                     cout << "Blad otwarcia, nie zapisano nic";
                 }
                 else{
-                    *error = baza->Save_file_trunc();
+                    *error = baza->saveFileTrunc();
                 if(*error == 1)
                     cout << "Zapis udany" << endl;
                 else if (*error == 0)
@@ -108,18 +132,19 @@ int main(){
                 delete error;
                 break;
                 case 2: cout << "Podaj nazwe pliku i rozszerzenie: ";
-                cin >> temp_name;
-                *error = baza->Save_file_trunc(temp_name);
+                cin >> tempName;
+                *error = baza->saveFileTrunc(tempName);
                 if(*error == 1)
                     cout << "Zapis udany" << endl;
                 else if (*error == 0)
                     cout << "Blad otwarcia, nie zapisano nic";
                 break;
+                cin.get();
 
             }
             break;
         }
-        case 6: exit;
+        case 7: exit;
         break;
         default: {
             cout << "Nie poprawna opcja, podaj jeszcze raz" << endl;

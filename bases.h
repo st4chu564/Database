@@ -8,12 +8,15 @@
 #include <windows.h>
 #include <conio.h>
 #include <stdio.h>
+#include <sstream>
 using namespace std;
 
 class Database{
 private:
     string file_name;
+    stringstream ss;
     vector <vector <string> > base;
+    vector <vector <string> > tempStorage;
     vector <string> row;
     string temp;
     vector <int> column_width;
@@ -26,16 +29,18 @@ private:
 public:
     Database();
     Database(string);
-    int Give_num_columns();
-    int Read_file();
-    int Save_file_trunc();
-    int Save_file_trunc(string);
-    int Seve_file_add();
-    bool Check_name();
-    bool Check_read();
-    bool Change_name(string);
-    void Add_single_row();
-    void Fine_print();
-    void Gotoxy(int,int);
-    void Print_read();
+    int giveNumColumns();
+    int readFile();
+    int saveFileTrunc();
+    int saveFileTrunc(string);
+    int saveFileAdd();
+    bool createNewFile();
+    bool checkName();
+    bool checkRead();
+    bool changeName(string);
+    void addRow();
+    void addMultipleRows();
+    void finePrint();
+    void gotoXY(int,int);
+    void printRead();
 };
