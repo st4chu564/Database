@@ -22,6 +22,9 @@ Database::Database(string name){
 int Database::giveNumColumns(){
     return num_columns;                                                  // Return number of columns
 };
+int Database::giveNumRows(){
+    return base.size();
+};
 int Database::readFile(){
     ifstream input;                                             	    // Prepare input file
     input.open(file_name.c_str());                              	    // Open input file
@@ -248,6 +251,21 @@ void Database::addMultipleRows(){
     row.clear();                                                        // Clear vector for further use
     temp = "";                                                          // Clear string for further use
 
+};
+void Database::printOneRow(/*string which*/){
+    system("cls");
+    for(int i = 1; i < base.size(); i++){
+        for(int y = 0; y < num_columns; y++)
+            cout << "|" << setw(column_width[y]) << base[0][y];
+        cout << endl;
+        for(int y = 0; y < num_columns; y++)
+            cout << "|" << setw(column_width[y]) << base[i][y];
+        cin.sync();
+        cin.clear();
+        cin.get();
+        system("cls");
+    }
+    cout << "Koniec pliku" << endl;
 };
 void Database::printRead(){                                            // Print read content to console
     system("cls");                                                      // Clear console

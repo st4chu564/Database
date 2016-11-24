@@ -11,7 +11,7 @@ using namespace std;
 int main(){
     Database* baza = NULL;
     string temp, tempName;
-    int x = 1, y = 2,a;
+    int x = 1, y = 2,a, freeUse;
     while(a != 7){
     int *swNumber = new int;
     int *error = new int;
@@ -48,12 +48,21 @@ int main(){
             cin >> temp;
             baza = new Database(temp);
             baza->addMultipleRows();
+            temp = "";
         }
         case 3: {
+            system("cls");
+            cout << "\t1. Wyswietlic caly plik" << endl;
+            cout << "\t2. Wyswietlic pojedyncza linie" << endl;
+            cin >> freeUse;
             if(baza == NULL)
                 cout << "Nie utworzony bazy, nie ma co wyswietlic" << endl;
-            else
+            else if (freeUse == 1)
                 baza->printRead();
+            else if (freeUse == 2)
+                baza->printOneRow();
+            else
+                cout << "Nie rozpoznano komendy, powrot do glownego menu" << endl;
             cin.sync();
             cin.clear();
             cin.get();

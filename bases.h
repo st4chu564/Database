@@ -30,6 +30,7 @@ public:
     Database();
     Database(string);
     int giveNumColumns();
+    int giveNumRows();
     int readFile();
     int saveFileTrunc();
     int saveFileTrunc(string);
@@ -42,5 +43,6 @@ public:
     void addMultipleRows();
     void finePrint();
     void gotoXY(int,int);
+    void printOneRow(/*string*/);
     void printRead();
 };
