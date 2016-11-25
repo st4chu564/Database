@@ -6,6 +6,8 @@ Database::Database(){
     max_width = 0;
     num_columns = 0;
     counter = 0;
+    editMethod = 0;
+    lastSavedRecord = 0;
     size_set = false;
     width_set = false;
     file_read = false;
@@ -15,12 +17,14 @@ Database::Database(string name){
     max_width = 0;
     num_columns = 0;
     counter = 0;
+    editMethod = 0;
+    lastSavedRecord = 0;
     size_set = false;
     width_set = false;
     file_read = false;
 };
 int Database::giveNumColumns(){
-    return num_columns;                                                  // Return number of columns
+    return num_columns;                                                 // Return number of columns
 };
 int Database::giveNumRows(){
     return base.size();
@@ -80,41 +84,59 @@ int Database::readFile(){
     file_read = true;                                               	// Mark file as read
     row.clear();                                                    	// Clear vector for further use
     temp = "";                                                      	// Clear string for further use
+    lastSavedRecord = base.size() - 1;                                  // Mark the last saved ( read here) record
     return 1;                                                       	// Read succesful
 };
-int Database::saveFileTrunc(){                                        // Save file, destryoing previous content in file, if any, using default file name
-    ofstream output;                                                    // Create output link
-    output.open(file_name.c_str(), std::ofstream::trunc);               // Open output file
-    if(!output.is_open())                                               // Check if output is open
-        return 0;                                                       // If not return 0
-    for(int i = 0; i < base.size(); i++){                               // Output line
-        for(int y = 0; y < num_columns; y++)                            // Output single field from line
-            if(y == num_columns - 1)
-                output << base[i][y];                                   // If the field is the last in line, dont write \t character
-            else
-                output << base[i][y] << '\t';                           // Add \t separator to file after each record
-        output << endl;                                                 // Add endline character to file
-    }
-    output.close();                                                     // Close the file
-    return 1;                                                           // Return 1 after succesfull write
+int Database::saveFile(string whereTo){
+    if(editMethod == 1)
+        saveFileTrunc(whereTo);
+    else if (editMethod == 2 && file_read)
+        saveFileAdd();
+    else
+        saveFileTrunc(whereTo);
+
 };
-int Database::saveFileTrunc(string name){                             // Save as above, but with name passed as parameter
+int Database::saveFileAdd(){
+    saveFileAdd(file_name);
+};
+int Database::saveFileAdd(string name){
     ofstream output;
-    output.open(name.c_str(), std::ofstream::trunc);
-    if(!output.is_open())
+    output.open(name.c_str(), std::ofstream::app);
+    if (!output.is_open())
         return 0;
-    for(int i = 0; i < base.size(); i++){
-        for(int y = 0; y < num_columns; y++)
-            if(y == num_columns - 1)
+    for(int i = lastSavedRecord; i < base.size(); i++){
+        for(int y = 0; y < num_columns; y++)                            // Another loop to go through each element
+            if(y == num_columns - 1)                                    // If it's not the end of a line, output element
                 output << base[i][y];
-            else
+            else                                                        // If it is, output element and seperator \t
                 output << base[i][y] << '\t';
-        output << endl;
     }
-    output.close();
+    editMethod = 0;
     return 1;
 };
-bool Database::checkName(){                                            // Check if file name was set
+int Database::saveFileTrunc(){                                          // Save file, destroying previous content in file, if any, using default file name
+    saveFileTrunc(file_name);
+};
+int Database::saveFileTrunc(string name){                               // Save as above, but with name passed as parameter
+    ofstream output;                                                    // Save file, destroying previous content in file, if any
+    output.open(name.c_str(), std::ofstream::trunc);                    // Create output file
+    if(!output.is_open())                                               // Check if output is open
+        return 0;                                                       // If not, return 0
+    else if (editMethod == 0)                                           // If file was not editted, return -1
+        return -1;
+    for(int i = 0; i < base.size(); i++){                               // Actual saving loop
+        for(int y = 0; y < num_columns; y++)                            // Another loop to go through each element
+            if(y == num_columns - 1)                                    // If it's not the end of a line, output element
+                output << base[i][y];
+            else                                                        // If it is, output element and seperator \t
+                output << base[i][y] << '\t';
+        output << endl;                                                 // Endline after each row
+    }
+    output.close();                                                     // Close file
+    editMethod = 0;
+    return 1;                                                           // Return 1, after everything went better than expected
+};
+bool Database::checkName(){                                             // Check if file name was set
     if(file_name == ""){
         return false;                                                   // Not set
     }
@@ -122,10 +144,10 @@ bool Database::checkName(){                                            // Check 
         return true;                                                    // Name set
     }
 };
-bool Database::checkRead(){                                            // Check if file was read
+bool Database::checkRead(){                                             // Check if file was read
     return file_read;
 };
-bool Database::changeName(string name){                                // Change file name
+bool Database::changeName(string name){                                 // Change file name
     file_name = name;
     return true;
 };
@@ -141,7 +163,7 @@ void Database::addRow(){
     cout << endl << endl;                                           	// Few lines of space
     cout << base[0][0] << ": " << base.size();   	                    // Auto set id to last + 1
     ss << base.size();
-    temp = ss.str();                                                     // Set id to last + 1
+    temp = ss.str();                                                    // Set id to last + 1
     row.push_back(temp);
     cout << endl;                                                       // Make it look pretty-ish
     for(int i = 1; i < num_columns; i++){                               // Prompt and read user input
@@ -162,6 +184,7 @@ void Database::addRow(){
     if(*answer == 't'){
         base.push_back(row);                                            // Push intermediary to base vector
         cout << "\nDane dodane do bazy." << endl;
+        editMethod = 1;
     }
     else
         cout << "\nOdrzucono zmiany, nic nie zostalo dodane." << endl;  // Data not added, changes discarded
@@ -244,6 +267,7 @@ void Database::addMultipleRows(){
         for(int i = 0; i < tempStorage.size(); i++)
             base.push_back(tempStorage[i]);
         cout << "\nDane dodane do bazy." << endl;
+        editMethod = 1;
     }
     else
         cout << "\nOdrzucono zmiany, nic nie zostalo dodane." << endl;  // Data not added, changes discarded
@@ -267,7 +291,7 @@ void Database::printOneRow(/*string which*/){
     }
     cout << "Koniec pliku" << endl;
 };
-void Database::printRead(){                                            // Print read content to console
+void Database::printRead(){                                             // Print read content to console
     system("cls");                                                      // Clear console
     for(int i = 0; i < base.size(); i++){                               // Go through each line
         for(int y = 0; y < num_columns; y++){

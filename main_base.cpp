@@ -10,7 +10,7 @@ using namespace std;
 
 int main(){
     Database* baza = NULL;
-    string temp, tempName;
+    string temp, tempName, name;
     int x = 1, y = 2,a, freeUse;
     while(a != 7){
     int *swNumber = new int;
@@ -28,9 +28,8 @@ int main(){
         case 1: {
             if(baza == NULL){
             cout << "Podaj nazwe pliku: ";
-            cin >> temp;
-            baza = new Database(temp);
-            baza->changeName(temp);
+            cin >> name;
+            baza = new Database(name);
             }
             if(baza->readFile() == 1)
             cout << "Wczytano poprawnie" << endl;
@@ -45,10 +44,9 @@ int main(){
         }
         case 2: {
             cout << "Podaj nazwe pliku i rozszerzenie: ";
-            cin >> temp;
-            baza = new Database(temp);
+            cin >> name;
+            baza = new Database(name);
             baza->addMultipleRows();
-            temp = "";
         }
         case 3: {
             system("cls");
@@ -117,36 +115,42 @@ int main(){
         }
         case 6: {
             system("cls");
-            cout << "\t1. Zapis do tego samego pliku z zastapieniem" << endl;
+            cout << "\t1. Zapis do tego samego pliku" << endl;
             cout << "\t2. Zapis do innego pliku" << endl;
 
             cin >> *swNumber;
             switch(*swNumber){
-                case 1: if(baza->checkRead()){
-                cout << "Zapisywanie, z zastapieniem poprzednich danych" << endl;
-                *error = baza->saveFileTrunc();
+                case 1:
+                if(!baza->checkName()){
+                    cout << "Podaj nazwe pliku: ";
+                    cin >> name;
+                    baza->changeName(name);
+                }
+                else if(baza->checkRead()){
+                    cout << "Zapisywanie, z zastapieniem poprzednich danych" << endl;
+                *error = baza->saveFile(name);
                 if(*error == 1)
                     cout << "Zapis udany" << endl;
                 else if (*error == 0)
                     cout << "Blad otwarcia, nie zapisano nic";
                 }
-                else{
-                    *error = baza->saveFileTrunc();
-                if(*error == 1)
-                    cout << "Zapis udany" << endl;
-                else if (*error == 0)
-                    cout << "Blad otwarcia, nie zapisano nic";
-                }
+                else if(*error == -1)
+                    cout << "Nie wprowadzono zmian do bazy, zaniechano zapisu" << endl;
 
                 delete error;
                 break;
                 case 2: cout << "Podaj nazwe pliku i rozszerzenie: ";
                 cin >> tempName;
-                *error = baza->saveFileTrunc(tempName);
+                *error = baza->saveFile(tempName);
                 if(*error == 1)
                     cout << "Zapis udany" << endl;
                 else if (*error == 0)
                     cout << "Blad otwarcia, nie zapisano nic";
+                else if (*error == -1)
+                    cout << "Nie wprowadzono zmian w pliku, zaniechano zapisu" << endl;
+                cin.clear();
+                cin.sync();
+                cin.get();
                 break;
                 cin.get();
 
