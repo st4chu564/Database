@@ -58,3 +58,15 @@ public:
     void printOneRow(/*string*/);
     void printRead();
 };
+
+class prepareDatabase{
+private:
+    string file_name;
+    vector <string> baseFilesNames;
+    string temp;
+public:
+    prepareDatabase();
+    prepareDatabase(string);
+    int fileRead();
+    int openFile(Database*);
+};

@@ -288,8 +288,8 @@ void Database::printOneRow(/*string which*/){
             cout << "|" << setw(column_width[y]) << base[index][y];
         if(index == base.size() - 1)
             cout << endl << "To ostatnia linia, DOWN aby skocnzyc, UP aby pokazac wczesniej" << endl;
-        getch();
-        keyboardInput = getch();
+        if((keyboardInput = getch()) != 27)
+            keyboardInput = getch();
         if(keyboardInput == UP){
             if(index > 1)
                 index--;

@@ -4,14 +4,16 @@ using namespace std;
 
 int main(){
     Database* baza = NULL;
+    prepareDatabase* glowny = NULL;
+    vector <string> fileIndex;
     string temp, tempName, name;
     int x = 1, y = 2,a, freeUse;
     while(a != 7){
     int *swNumber = new int;
     int *error = new int;
     cout << "\tCo chcesz robic?" << endl;
-    cout << "\t1. Wczytac plik" << endl;
-    cout << "\t2. Stworzyc nowy plik" << endl;
+    cout << "\t1. Wczytac baze" << endl;
+    cout << "\t2. Stworzyc nowy baze" << endl;
     cout << "\t3. Wyswietlic plik" << endl;
     cout << "\t4. Edytowac plik" << endl;
     cout << "\t5. Wyswietlanie szczegolowe" << endl;
