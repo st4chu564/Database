@@ -278,15 +278,24 @@ void Database::addMultipleRows(){
 };
 void Database::printOneRow(/*string which*/){
     system("cls");
-    for(int i = 1; i < base.size(); i++){
+    char keyboardInput = 0;
+    int index = 1;
+    while(keyboardInput != ESC && index < base.size()){
         for(int y = 0; y < num_columns; y++)
             cout << "|" << setw(column_width[y]) << base[0][y];
         cout << endl;
         for(int y = 0; y < num_columns; y++)
-            cout << "|" << setw(column_width[y]) << base[i][y];
-        cin.sync();
-        cin.clear();
-        cin.get();
+            cout << "|" << setw(column_width[y]) << base[index][y];
+        if(index == base.size() - 1)
+            cout << endl << "To ostatnia linia, DOWN aby skocnzyc, UP aby pokazac wczesniej" << endl;
+        getch();
+        keyboardInput = getch();
+        if(keyboardInput == UP){
+            if(index > 1)
+                index--;
+        }
+        else if(keyboardInput == DOWN)
+            index++;
         system("cls");
     }
     cout << "Koniec pliku" << endl;

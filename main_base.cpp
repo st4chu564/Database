@@ -1,10 +1,4 @@
 #include "bases.cpp"
-#define DOWN 80
-#define UP 72
-#define LEFT 75
-#define RIGHT 77
-#define ESC 27
-#define ENTER 13
 
 using namespace std;
 
