@@ -34,7 +34,7 @@ int main(){
             else{
             cout << "Blad wczytywania" << endl;
             delete baza;
-            baza = new Database;
+            baza = NULL;
             }
             cin.get();
             cin.get();
@@ -56,20 +56,19 @@ int main(){
             else if (freeUse == 1)
                 baza->printRead();
             else if (freeUse == 2){
-                    //columnWidth = baza->giveWidth();
                     system("cls");
                     char keyboardInput = 0;
                     int index = 1;
                     singleRow = baza->printOneRow(index);
                     columnWidth = baza->giveColumnWidth();
                     tableHeader = baza->giveFirstRow();
-                    while(keyboardInput != ESC && index < base.size()){
-                        for(int y = 0; y < num_columns; y++)
-                            cout << "|" << setw(column_width[y]) << base[0][y];
+                    while(keyboardInput != ESC && index < baza->giveNumRows()){
+                        for(int y = 0; y < tableHeader.size(); y++)
+                            cout << "|" << setw(columnWidth[y]) << tableHeader[y];
                         cout << endl;
-                        for(int y = 0; y < num_columns; y++)
-                            cout << "|" << setw(column_width[y]) << base[index][y];
-                        if(index == base.size() - 1)
+                        for(int y = 0; y < singleRow.size(); y++)
+                            cout << "|" << setw(columnWidth[y]) << singleRow[y];
+                        if(index == ((baza->giveNumRows()) - 1))
                             cout << endl << "To ostatnia linia, DOWN aby skocnzyc, UP aby pokazac wczesniej" << endl;
                         if((keyboardInput = getch()) != 27)
                             keyboardInput = getch();
@@ -79,8 +78,13 @@ int main(){
                         }
                         else if(keyboardInput == DOWN)
                             index++;
+                        singleRow = baza->printOneRow(index);
                         system("cls");
                     }
+                    cout << "Koniec Pliku" << endl;
+                    singleRow.clear();
+                    columnWidth.clear();
+                    tableHeader.clear();
             }
             else
                 cout << "Nie rozpoznano komendy, powrot do glownego menu" << endl;
