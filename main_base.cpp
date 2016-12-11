@@ -62,8 +62,25 @@ int main(){
                     int index = 1;
                     singleRow = baza->printOneRow(index);
                     columnWidth = baza->giveColumnWidth();
-
-                    cout << tableHeader[1];
+                    tableHeader = baza->giveFirstRow();
+                    while(keyboardInput != ESC && index < base.size()){
+                        for(int y = 0; y < num_columns; y++)
+                            cout << "|" << setw(column_width[y]) << base[0][y];
+                        cout << endl;
+                        for(int y = 0; y < num_columns; y++)
+                            cout << "|" << setw(column_width[y]) << base[index][y];
+                        if(index == base.size() - 1)
+                            cout << endl << "To ostatnia linia, DOWN aby skocnzyc, UP aby pokazac wczesniej" << endl;
+                        if((keyboardInput = getch()) != 27)
+                            keyboardInput = getch();
+                        if(keyboardInput == UP){
+                            if(index > 1)
+                                index--;
+                        }
+                        else if(keyboardInput == DOWN)
+                            index++;
+                        system("cls");
+                    }
             }
             else
                 cout << "Nie rozpoznano komendy, powrot do glownego menu" << endl;
