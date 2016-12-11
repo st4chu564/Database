@@ -6,6 +6,8 @@ int main(){
     Database* baza = NULL;
     prepareDatabase* glowny = NULL;
     vector <string> fileIndex;
+    vector <string> singleRow, tableHeader;
+    vector <int> columnWidth;
     string temp, tempName, name;
     int x = 1, y = 2,a, freeUse;
     while(a != 7){
@@ -53,8 +55,16 @@ int main(){
                 cout << "Nie utworzony bazy, nie ma co wyswietlic" << endl;
             else if (freeUse == 1)
                 baza->printRead();
-            else if (freeUse == 2)
-                baza->printOneRow();
+            else if (freeUse == 2){
+                    //columnWidth = baza->giveWidth();
+                    system("cls");
+                    char keyboardInput = 0;
+                    int index = 1;
+                    singleRow = baza->printOneRow(index);
+                    columnWidth = baza->giveColumnWidth();
+
+                    cout << tableHeader[1];
+            }
             else
                 cout << "Nie rozpoznano komendy, powrot do glownego menu" << endl;
             cin.sync();

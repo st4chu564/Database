@@ -276,30 +276,18 @@ void Database::addMultipleRows(){
     temp = "";                                                          // Clear string for further use
 
 };
-void Database::printOneRow(/*string which*/){
-    system("cls");
-    char keyboardInput = 0;
-    int index = 1;
-    while(keyboardInput != ESC && index < base.size()){
-        for(int y = 0; y < num_columns; y++)
-            cout << "|" << setw(column_width[y]) << base[0][y];
-        cout << endl;
-        for(int y = 0; y < num_columns; y++)
-            cout << "|" << setw(column_width[y]) << base[index][y];
-        if(index == base.size() - 1)
-            cout << endl << "To ostatnia linia, DOWN aby skocnzyc, UP aby pokazac wczesniej" << endl;
-        if((keyboardInput = getch()) != 27)
-            keyboardInput = getch();
-        if(keyboardInput == UP){
-            if(index > 1)
-                index--;
-        }
-        else if(keyboardInput == DOWN)
-            index++;
-        system("cls");
-    }
-    cout << "Koniec pliku" << endl;
+vector <string> Database::giveFirstRow(){
+    return base[0];
 };
+vector <int> Database::giveColumnWidth(){
+    return column_width;
+};
+vector <string> Database::printOneRow(int which){
+    return base[which];
+};
+/*vector <int> Database::giveWidth(){
+    return column_width;
+};*/
 void Database::printRead(){                                             // Print read content to console
     system("cls");                                                      // Clear console
     for(int i = 0; i < base.size(); i++){                               // Go through each line

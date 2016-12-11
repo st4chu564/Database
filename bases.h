@@ -55,7 +55,9 @@ public:
     void addMultipleRows();
     void finePrint();
     void gotoXY(int,int);
-    void printOneRow(/*string*/);
+    vector <string> printOneRow(int);
+    vector <string> giveFirstRow();
+    vector <int> giveColumnWidth();
     void printRead();
 };
 
