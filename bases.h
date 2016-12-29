@@ -61,12 +61,15 @@ public:
 
 class prepareDatabase{
 private:
+    bool read;
     string file_name;
     vector <string> baseFilesNames;
     string temp;
 public:
     prepareDatabase();
     prepareDatabase(string);
+    int checkNameCorrectness();
+    bool checkRead();
     int fileRead();
     int openFile(Database*);
 };

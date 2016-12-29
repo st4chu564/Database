@@ -3,6 +3,7 @@
 using namespace std;
 
 int main(){
+    prepareDatabase* index = NULL;
     Database* baza = NULL;
     prepareDatabase* glowny = NULL;
     vector <string> fileIndex;
@@ -22,25 +23,22 @@ int main(){
     cin >> a;
     switch(a){
         case 1: {
-            if(baza == NULL){
-            cout << "Podaj nazwe pliku: ";
-            cin >> name;
-            baza = new Database(name);
+            cout << "Podaj nazwe pliku glownego: ";
+            cin >> tempName;
+            index = new prepareDatabase(tempName);
+            if(index->fileRead() == 1){
+                cout << "Blad otwarcia pliku, sprobuj jeszcze raz" << endl;
+                delete index;
             }
-            if(baza->readFile() == 1)
-            cout << "Wczytano poprawnie" << endl;
-            else{
-            cout << "Blad wczytywania" << endl;
-            delete baza;
-            baza = new Database;
-            }
-            cin.get();
-            cin.get();
+            else
+                cout << "Wczytano poprawnie, baza gotowa do dalszych operacji" << endl;
+            system("pause");
             break;
         }
         case 2: {
-            cout << "Podaj nazwe pliku i rozszerzenie: ";
+            cout << "Podaj nazwe pliku : ";
             cin >> name;
+            name.append(".txt");
             baza = new Database(name);
             baza->addMultipleRows();
         }
@@ -167,5 +165,6 @@ int main(){
         system("cls");
     }
     delete baza;
+    delete index;
     return 1;
 }

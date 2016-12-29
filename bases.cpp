@@ -1,6 +1,37 @@
 #include "bases.h"
 using namespace std;
+prepareDatabase::prepareDatabase(string name){
+    read = false;
+    file_name = name;
+};
+bool prepareDatabase::checkRead(){
+    return read;
+};
+int prepareDatabase::fileRead(){
+    ifstream input;
+    input.open(file_name.c_str());
+    if(!input.is_open()){
+        return 1;
+    }
+    while(!input.eof()){
+        input >> temp;
+        baseFilesNames.push_back(temp);
+        temp = "";
+    }
+    read = true;
+    input.close();
+    return 0;
+};
+int prepareDatabase::checkNameCorrectness(){
+    for(int i = 0; i < baseFilesNames.size(); i++){
+        int found = baseFilesNames[i].find(".txt");
+        if(found == std::string::npos || found != (baseFilesNames[i].length() - 4))
+            return 1; // Name does not have an extension
+    }
+};
+int prepareDatabase::openFile(Database* base){
 
+};
 Database::Database(){
     file_name = "";
     max_width = 0;
