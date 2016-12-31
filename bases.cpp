@@ -4,6 +4,10 @@ prepareDatabase::prepareDatabase(string name){
     read = false;
     file_name = name;
 };
+int prepareDatabase::openBaseFiles(vector <Database*> create){
+    for(int i = 0; i < baseFilesNames.size(); i ++)
+        cout << baseFilesNames[i] << endl;
+};
 bool prepareDatabase::checkRead(){
     return read;
 };
@@ -28,6 +32,7 @@ int prepareDatabase::checkNameCorrectness(){
         if(found == std::string::npos || found != (baseFilesNames[i].length() - 4))
             return 1; // Name does not have an extension
     }
+    return 0; // Name does have an .txt extension, it's correct
 };
 int prepareDatabase::openFile(Database* base){
 

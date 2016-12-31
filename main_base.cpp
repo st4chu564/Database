@@ -7,6 +7,7 @@ int main(){
     Database* baza = NULL;
     prepareDatabase* glowny = NULL;
     vector <string> fileIndex;
+    vector <Database*> entry;
     string temp, tempName, name;
     int x = 1, y = 2,a, freeUse;
     while(a != 7){
@@ -30,8 +31,11 @@ int main(){
                 cout << "Blad otwarcia pliku, sprobuj jeszcze raz" << endl;
                 delete index;
             }
-            else
+            else{
                 cout << "Wczytano poprawnie, baza gotowa do dalszych operacji" << endl;
+                index->openBaseFiles(entry);
+
+            }
             system("pause");
             break;
         }
