@@ -4,7 +4,8 @@ using namespace std;
 
 int main(){
     prepareDatabase* index = NULL;
-    vector <string> fileIndex, toPush, tempBeforePush;
+    vector <string> fileIndex, headers, tempBeforePush;
+    vector < vector <string>> toPush;
     vector <Database*> entry;
     string temp, tempName, name;
     int x = 1, y = 2,a, freeUse, currentFileIndex = -1;
@@ -55,7 +56,7 @@ int main(){
             entry.push_back(new Database(name));
             system("pause");
             currentFileIndex = 0;
-            entry[currentFileIndex]->addMultipleRows();
+            //entry[currentFileIndex]->addMultipleRows();
             break;
         }
         case 3: {
@@ -95,30 +96,39 @@ int main(){
             cin.ignore();
             switch(*tempSwitch){
                 case '1':{
-                    if(entry[currentFileIndex]->returnHeaders(&tempBeforePush) != 0){
+                    if(entry[currentFileIndex]->returnHeaders(&headers) == 0){
                         cout << "Baza jest pusta, podaj naglowki ( id dodawane automatycznie, q aby przerwaæ)" << endl;
-                        toPush.push_back("id");
+                        tempBeforePush.push_back("id");
                         do{
                             cout << "Podaj nazwe kolumny: ";
                             cin >> temp;
-                            if(tolower(temp.c_str() != "q"))
-                                toPush.push_back(temp);
-                        }while(tolower(temp.c_str() != "q"));
-                        entry[currentFileIndex]->addRow(toPush);
-                        toPush.clear();
+                            if(temp != "q" && temp != "Q")
+                                tempBeforePush.push_back(temp);
+                        }while(temp != "q" && temp != "Q");
+                        toPush.push_back(tempBeforePush);
+                        headers = tempBeforePush;
+                        tempBeforePush.clear();
                     }
-                    for(int i = 0; i < tempBeforePush.size(); i++){
-                        if(tolower(temp.c_str() != "q") && i > 0){
-                            cout << tempBeforePush[i] << " : ";
+                    temp = "";
+                    tempBeforePush.push_back(to_string(entry[currentFileIndex]->giveNumRows() + 1));
+                    for(int i = 1; i < headers.size(); i++){
+                        if (temp != "q" && temp != "Q"){
+                            cout << headers[i] << " : ";
                             cin >> temp;
+                            if (temp != "q" && temp != "Q"){
+                                tempBeforePush.push_back(temp);
+                                temp = "";
+                            }
+                            else
+                                tempBeforePush.push_back(" ");
                         }
-                        else if (i == 0){
-                            cout << tempBeforePush[i] << " : " << i + 1 << endl;
-                            toPush.push_back(to_string(i));
-                        }
-                        //else
+                        else
+                            tempBeforePush.push_back(" ");
                     }
-                    //entry[currentFileIndex]->addRow();
+                    toPush.push_back(tempBeforePush);
+                    entry[currentFileIndex]->addRow(toPush);
+                    tempBeforePush.clear();
+                    toPush.clear();
                     break;
                 }
                 case '2':{
@@ -150,7 +160,6 @@ int main(){
             system("cls");
             cout << "\t1. Zapis do tego samego pliku" << endl;
             cout << "\t2. Zapis do innego pliku" << endl;
-
             cin >> *swNumber;
             switch(*swNumber){
                 case 1:
@@ -166,7 +175,6 @@ int main(){
                         cout << "Zapis udany" << endl;
                     else if (*error == 0)
                         cout << "Blad otwarcia, nie zapisano nic";
-
                     else if(*error == -1)
                         cout << "Nie wprowadzono zmian do bazy, zaniechano zapisu" << endl;
                     delete error;

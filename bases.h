@@ -53,8 +53,8 @@ public:
     bool checkRead();
     bool changeName(string);
     int returnHeaders(vector <string>*);
-    void addRow (vector < string>);
-    void addMultipleRows();
+    void setWidth();
+    void addRow (vector <vector <string>>);
     void finePrint();
     void gotoXY(int,int);
     void printOneRow(/*string*/);

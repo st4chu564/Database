@@ -199,97 +199,26 @@ bool Database::changeName(string name){                                 // Chang
 int Database::returnHeaders(vector <string>* headerLocation){
     if(base.size() > 0);
         headerLocation = &base[0];
-}
-void Database::addRow(vector <string> dataToPush){
-    base.push_back(dataToPush);
 };
-void Database::addMultipleRows(){
-    system("cls");                                                  	// Clear screen
-    if (base.size() > 0){
-        cout << "Przykladowy wpis: " << endl;                           // Example database entries if any available
-        for(int i = 0; i < 2; i++){
-            for(int y = 0; y < num_columns; y++){
-                cout << '|' << setw(column_width[y] + 1) << base[i][y];
-            }
-        cout << endl;
-        }
-    cout << base[0][0] << ": " << base.size();   	                    // Auto set id to last + 1
-    ss << base.size();
-    temp = ss.str();                                                    // Set id to last + 1
-    row.push_back(temp);
-    }                                                                   // Few lines of space
-    else if (base.size() == 0){
-        row.push_back("id");
-        column_width.push_back(2);
-        cin.sync();
-        cin.clear();
-        do{
-            temp = "";
-            cout << "Podaj naglowki kolumn: (q konczy, id dodane aut)" << endl;
-            getline(cin, temp);
-            if(temp != "q"){
-                row.push_back(temp);
-                column_width.push_back(temp.length());
-            }
-            else if (temp.length() == 0)
-                cout << "Podano nie poprawny naglowek, sprobuj jeszcze raz" << endl;
-        }while(temp != "q");
-        tempStorage.push_back(row);
-        num_columns = row.size();
-        row.clear();
-        temp = "";
+void Database::setWidth(){
+    if(!width_set){
+        for(int i = 0; i < num_columns; i++)
+            column_width.push_back(base[0][i].length());
+        width_set = true;
     }
-    do{
-        cout << endl;                                                   // Make it look pretty-ish
-        ss << tempStorage.size();
-        temp = ss.str();
-        row.push_back(temp);
-        temp = "";
-        ss.str("");
-        for(int i = 1; i < num_columns; i++){                           // Prompt and read user input
-            if(i == 0)
-                cout << tempStorage[0][i] << ":\t\t" << i + 1 << endl;
-            else{
-                cout << tempStorage[0][i] << ":\t\t";                   // Cosmetics
-                getline(cin, temp);
-            }
-            if(temp != "q" && temp != "Q"){
-                row.push_back(temp);
-                if(temp.length() > column_width[i])
-                    column_width[i] = temp.length();
-            }
-            else                                                        // Push input to intermediary vector
-                do{
-                    row.push_back(" ");
-                    i++;
-                }while(i < num_columns);
-    }
-    tempStorage.push_back(row);                                         // Push input row to temporal storage
-    row.clear();                                                        // Clear row so it doesn't not push more data than neccessary
-    }while(temp != "q" && temp != "Q");
-    tempStorage.pop_back();
-    for(int i = 0; i < tempStorage.size(); i++){                               // Go through each line
+    for(int i = 1; i < base.size(); i++){
         for(int y = 0; y < num_columns; y++)
-            cout << '|' << setw(column_width[y] + 1) << tempStorage[i][y];     // Print each field
-        cout << endl;
+            if(column_width[y] < base[i][y].length())
+                column_width[y] = base[i][y].length();
     }
-
-    char *answer = new char;
-    cout << endl << "Dodac wprowadzone dane do bazy? (t/n) ";           // Ask for correctness of entered data
-    *answer = getch();                                                  // Get answer
-    *answer = tolower(*answer);                                         // Change answet to lower
-    if(*answer == 't'){
-        for(int i = 0; i < tempStorage.size(); i++)
-            base.push_back(tempStorage[i]);
-        cout << "\nDane dodane do bazy." << endl;
-        editMethod = 1;
+};
+void Database::addRow(vector <vector <string>> dataToPush){
+    num_columns = dataToPush[0].size();
+    for(int i = 0; i < dataToPush.size(); i++){
+        base.push_back(dataToPush[i]);
     }
-    else
-        cout << "\nOdrzucono zmiany, nic nie zostalo dodane." << endl;  // Data not added, changes discarded
-    delete answer;                                                      // Release answer
-    row.clear();                                                        // Clear vector for further use
-    temp = "";                                                          // Clear string for further use
-
+    setWidth();
+    editMethod = 1;
 };
 void Database::printOneRow(/*string which*/){
     system("cls");
