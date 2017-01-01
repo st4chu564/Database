@@ -52,7 +52,8 @@ public:
     bool checkName();
     bool checkRead();
     bool changeName(string);
-    void addRow();
+    int returnHeaders(vector <string>*);
+    void addRow (vector < string>);
     void addMultipleRows();
     void finePrint();
     void gotoXY(int,int);
@@ -69,6 +70,7 @@ private:
 public:
     prepareDatabase();
     prepareDatabase(string);
+    int addFilesToBase(string);
     int checkNameCorrectness();
     int openBaseFiles(vector <Database*>* create);
     bool checkRead();

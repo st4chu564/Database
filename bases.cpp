@@ -4,6 +4,10 @@ prepareDatabase::prepareDatabase(string name){
     read = false;
     file_name = name;
 };
+int prepareDatabase::addFilesToBase(string name){
+    baseFilesNames.push_back(name);
+    return 1;
+};
 int prepareDatabase::openBaseFiles(vector <Database*>* create){
         for(int i = 0; i < baseFilesNames.size(); i++){
             create->push_back(new Database(baseFilesNames[i]));
@@ -156,7 +160,7 @@ int Database::saveFileAdd(string name){
     return 1;
 };
 int Database::saveFileTrunc(){                                          // Save file, destroying previous content in file, if any, using default file name
-    saveFileTrunc(file_name);
+    return saveFileTrunc(file_name);
 };
 int Database::saveFileTrunc(string name){                               // Save as above, but with name passed as parameter
     ofstream output;                                                    // Save file, destroying previous content in file, if any
@@ -192,46 +196,12 @@ bool Database::changeName(string name){                                 // Chang
     file_name = name;
     return true;
 };
-void Database::addRow(){
-    system("cls");                                                  	// Clear screen
-    cout << "Przykladowy wpis: " << endl;                           	// Example database file entry
-    for(int i = 0; i < 2; i++){
-        for(int y = 0; y < num_columns; y++){
-            cout << '|' << setw(column_width[y] + 1) << base[i][y];
-        }
-    cout << endl;
-    }
-    cout << endl << endl;                                           	// Few lines of space
-    cout << base[0][0] << ": " << base.size();   	                    // Auto set id to last + 1
-    ss << base.size();
-    temp = ss.str();                                                    // Set id to last + 1
-    row.push_back(temp);
-    cout << endl;                                                       // Make it look pretty-ish
-    for(int i = 1; i < num_columns; i++){                               // Prompt and read user input
-        cout << base[0][i] << ":\t\t";                                  // Cosmetics
-        getline(cin, temp);                                             // Save input
-        row.push_back(temp);                                            // Push input to intermediary vector
-    }
-    cout << "Zostaly wprowadzone nastepujace dane: " << endl;
-    for(int y = 0; y < num_columns; y++)                                // Make sure correct data was entered
-        cout << '|' << setw(column_width[y] + 1) << base[0][y];
-    cout << endl;
-    for(int i = 0; i < num_columns; i++)
-        cout << '|' << setw(column_width[i] + 1) << row[i];             // Print entered data
-    char *answer = new char;
-    cout << endl << "Dodac wprowadzone dane do bazy? (t/n) ";           // Ask for correctness of entered data
-    *answer = getch();                                                  // Get answer
-    *answer = tolower(*answer);                                         // Change answet to lower
-    if(*answer == 't'){
-        base.push_back(row);                                            // Push intermediary to base vector
-        cout << "\nDane dodane do bazy." << endl;
-        editMethod = 1;
-    }
-    else
-        cout << "\nOdrzucono zmiany, nic nie zostalo dodane." << endl;  // Data not added, changes discarded
-    delete answer;                                                      // Release answer
-    row.clear();                                                        // Clear vector for further use
-    temp = "";                                                          // Clear string for further use
+int Database::returnHeaders(vector <string>* headerLocation){
+    if(base.size() > 0);
+        headerLocation = &base[0];
+}
+void Database::addRow(vector <string> dataToPush){
+    base.push_back(dataToPush);
 };
 void Database::addMultipleRows(){
     system("cls");                                                  	// Clear screen
@@ -255,7 +225,7 @@ void Database::addMultipleRows(){
         cin.clear();
         do{
             temp = "";
-            cout << "Podaj naglowki kolumn: (q konczy)" << endl;
+            cout << "Podaj naglowki kolumn: (q konczy, id dodane aut)" << endl;
             getline(cin, temp);
             if(temp != "q"){
                 row.push_back(temp);
@@ -277,8 +247,12 @@ void Database::addMultipleRows(){
         temp = "";
         ss.str("");
         for(int i = 1; i < num_columns; i++){                           // Prompt and read user input
-            cout << tempStorage[0][i] << ":\t\t";                       // Cosmetics
-            getline(cin, temp);
+            if(i == 0)
+                cout << tempStorage[0][i] << ":\t\t" << i + 1 << endl;
+            else{
+                cout << tempStorage[0][i] << ":\t\t";                   // Cosmetics
+                getline(cin, temp);
+            }
             if(temp != "q" && temp != "Q"){
                 row.push_back(temp);
                 if(temp.length() > column_width[i])
