@@ -69,7 +69,7 @@ public:
     prepareDatabase();
     prepareDatabase(string);
     int checkNameCorrectness();
-    int openBaseFiles(vector <Database*>);
+    int openBaseFiles(vector <Database*>* create);
     bool checkRead();
     int fileRead();
     int openFile(Database*);

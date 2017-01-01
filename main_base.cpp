@@ -5,7 +5,6 @@ using namespace std;
 int main(){
     prepareDatabase* index = NULL;
     Database* baza = NULL;
-    prepareDatabase* glowny = NULL;
     vector <string> fileIndex;
     vector <Database*> entry;
     string temp, tempName, name;
@@ -33,8 +32,10 @@ int main(){
             }
             else{
                 cout << "Wczytano poprawnie, baza gotowa do dalszych operacji" << endl;
-                index->openBaseFiles(entry);
-
+                //*entry = index->openBaseFiles();
+                index->openBaseFiles(&entry);
+                for(int i = 0; i < entry.size(); i++)
+                    cout entry[i].
             }
             system("pause");
             break;

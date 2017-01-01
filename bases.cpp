@@ -4,9 +4,11 @@ prepareDatabase::prepareDatabase(string name){
     read = false;
     file_name = name;
 };
-int prepareDatabase::openBaseFiles(vector <Database*> create){
-    for(int i = 0; i < baseFilesNames.size(); i ++)
-        cout << baseFilesNames[i] << endl;
+int prepareDatabase::openBaseFiles(vector <Database*>* create){
+        for(int i = 0; i < baseFilesNames.size(); i++){
+            create->push_back(new Database(baseFilesNames[i]));
+        }
+        return 1;
 };
 bool prepareDatabase::checkRead(){
     return read;
