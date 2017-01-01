@@ -39,6 +39,7 @@ private:
 public:
     Database();
     Database(string);
+    string returnName();
     int giveNumColumns();
     int giveNumRows();
     int readFile();

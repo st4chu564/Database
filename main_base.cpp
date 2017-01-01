@@ -8,10 +8,12 @@ int main(){
     vector <string> fileIndex;
     vector <Database*> entry;
     string temp, tempName, name;
-    int x = 1, y = 2,a, freeUse;
+    int x = 1, y = 2,a, freeUse, currentFileIndex = -1;
     while(a != 7){
     int *swNumber = new int;
     int *error = new int;
+    if(currentFileIndex != -1)
+        cout << "\tAktualny plik: " << entry[currentFileIndex]->returnName() << endl;
     cout << "\tCo chcesz robic?" << endl;
     cout << "\t1. Wczytac baze" << endl;
     cout << "\t2. Stworzyc nowy baze" << endl;
@@ -35,7 +37,10 @@ int main(){
                 //*entry = index->openBaseFiles();
                 index->openBaseFiles(&entry);
                 for(int i = 0; i < entry.size(); i++)
-                    cout entry[i].
+                    cout << entry[i]->returnName() << endl;
+                currentFileIndex = 0;
+                entry[currentFileIndex]->readFile();
+
             }
             system("pause");
             break;
@@ -52,10 +57,10 @@ int main(){
             cout << "\t1. Wyswietlic caly plik" << endl;
             cout << "\t2. Wyswietlic pojedyncza linie" << endl;
             cin >> freeUse;
-            if(baza == NULL)
+            if(entry.size() == 0)
                 cout << "Nie utworzony bazy, nie ma co wyswietlic" << endl;
             else if (freeUse == 1)
-                baza->printRead();
+                entry[currentFileIndex]->printRead();
             else if (freeUse == 2)
                 baza->printOneRow();
             else

@@ -61,6 +61,9 @@ Database::Database(string name){
     width_set = false;
     file_read = false;
 };
+string Database::returnName(){
+    return file_name;
+};
 int Database::giveNumColumns(){
     return num_columns;                                                 // Return number of columns
 };
