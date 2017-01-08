@@ -3,18 +3,10 @@
 using namespace std;
 
 int main(){
-<<<<<<< HEAD
     prepareDatabase* index = NULL;
-    vector <string> fileIndex, headers, tempBeforePush;
+    vector <string> fileIndex, headers, tempBeforePush, singleRow;
     vector < vector <string>> toPush;
     vector <Database*> entry;
-=======
-    Database* baza = NULL;
-    prepareDatabase* glowny = NULL;
-    vector <string> fileIndex;
-    vector <string> singleRow, tableHeader;
-    vector <int> columnWidth;
->>>>>>> REmoving printing from method
     string temp, tempName, name;
     int x = 1, y = 2,a, freeUse, currentFileIndex = -1;
     while(a != 0){
@@ -43,13 +35,14 @@ int main(){
             }
             else{
                 cout << "Wczytano poprawnie, baza gotowa do dalszych operacji" << endl;
-                //*entry = index->openBaseFiles();
                 index->openBaseFiles(&entry);
                 for(int i = 0; i < entry.size(); i++)
                     cout << entry[i]->returnName() << endl;
                 currentFileIndex = 0;
-                entry[currentFileIndex]->readFile();
-
+                if(entry[currentFileIndex]->readFile() != 0)
+                    entry[currentFileIndex]->returnHeaders(&headers);
+                else
+                    cout << "Blad odczytu pliku z danymi " << endl;
             }
             system("pause");
             break;
@@ -76,23 +69,18 @@ int main(){
             if(entry.size() == 0)
                 cout << "Nie utworzony bazy, nie ma co wyswietlic" << endl;
             else if (freeUse == 1)
-<<<<<<< HEAD
                 entry[currentFileIndex]->printRead();
-            else if (freeUse == 2)
-                entry[currentFileIndex]->printOneRow();
-=======
-                baza->printRead();
             else if (freeUse == 2){
-                    //columnWidth = baza->giveWidth();
-                    system("cls");
-                    char keyboardInput = 0;
-                    int index = 1;
-                    singleRow = baza->printOneRow(index);
-                    columnWidth = baza->giveColumnWidth();
+                if(entry[currentFileIndex]->returnHeaders(&headers) == 0)
+                    cout << "Blad odczytu danych" << endl;
+                else{
+                    for(int i = 0; i < headers.size(); i++)
+                        cout << headers[i] << "\t";
+                    cout << endl;
 
-                    cout << tableHeader[1];
+                }
+
             }
->>>>>>> REmoving printing from method
             else
                 cout << "Nie rozpoznano komendy, powrot do glownego menu" << endl;
             cin.sync();

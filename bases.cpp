@@ -204,8 +204,10 @@ bool Database::changeName(string name){                                 // Chang
     return true;
 };
 int Database::returnHeaders(vector <string>* headerLocation){
-    if(base.size() > 0);
+    if(base.size() > 0)
         headerLocation = &base[0];
+    else
+        return 0;
 };
 void Database::setWidth(){
     if(!width_set){
@@ -226,9 +228,6 @@ void Database::addRow(vector <vector <string>> dataToPush){
     }
     setWidth();
     editMethod = 1;
-};
-vector <string> Database::giveFirstRow(){
-    return base[0];
 };
 vector <int> Database::giveColumnWidth(){
     return column_width;
