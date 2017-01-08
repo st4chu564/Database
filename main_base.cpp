@@ -16,7 +16,7 @@ int main(){
         cout << "\tAktualny plik: " << entry[currentFileIndex]->returnName() << endl;
     cout << "\tCo chcesz robic?" << endl;
     cout << "\t1. Wczytac baze" << endl;
-    cout << "\t2. Stworzyc nowy baze" << endl;
+    cout << "\t2. Stworzyc nowa baze" << endl;
     cout << "\t3. Wyswietlic plik" << endl;
     cout << "\t4. Edytowac plik" << endl;
     cout << "\t5. Wyswietlanie szczegolowe" << endl;
