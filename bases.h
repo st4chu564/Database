@@ -39,6 +39,7 @@ private:
 public:
     Database();
     Database(string);
+    string returnName();
     int giveNumColumns();
     int giveNumRows();
     int readFile();
@@ -51,8 +52,9 @@ public:
     bool checkName();
     bool checkRead();
     bool changeName(string);
-    void addRow();
-    void addMultipleRows();
+    int returnHeaders(vector <string>*);
+    void setWidth();
+    void addRow (vector <vector <string>>);
     void finePrint();
     void gotoXY(int,int);
     vector <string> printOneRow(int);
@@ -63,12 +65,17 @@ public:
 
 class prepareDatabase{
 private:
+    bool read;
     string file_name;
     vector <string> baseFilesNames;
     string temp;
 public:
     prepareDatabase();
     prepareDatabase(string);
+    int addFilesToBase(string);
+    int checkNameCorrectness();
+    int openBaseFiles(vector <Database*>* create);
+    bool checkRead();
     int fileRead();
     int openFile(Database*);
 };

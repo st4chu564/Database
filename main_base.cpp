@@ -3,16 +3,25 @@
 using namespace std;
 
 int main(){
+<<<<<<< HEAD
+    prepareDatabase* index = NULL;
+    vector <string> fileIndex, headers, tempBeforePush;
+    vector < vector <string>> toPush;
+    vector <Database*> entry;
+=======
     Database* baza = NULL;
     prepareDatabase* glowny = NULL;
     vector <string> fileIndex;
     vector <string> singleRow, tableHeader;
     vector <int> columnWidth;
+>>>>>>> REmoving printing from method
     string temp, tempName, name;
-    int x = 1, y = 2,a, freeUse;
-    while(a != 7){
+    int x = 1, y = 2,a, freeUse, currentFileIndex = -1;
+    while(a != 0){
     int *swNumber = new int;
     int *error = new int;
+    if(currentFileIndex != -1)
+        cout << "\tAktualny plik: " << entry[currentFileIndex]->returnName() << endl;
     cout << "\tCo chcesz robic?" << endl;
     cout << "\t1. Wczytac baze" << endl;
     cout << "\t2. Stworzyc nowy baze" << endl;
@@ -20,72 +29,70 @@ int main(){
     cout << "\t4. Edytowac plik" << endl;
     cout << "\t5. Wyswietlanie szczegolowe" << endl;
     cout << "\t6. Zapisanie pliku" << endl;
-    cout << "\t7. Zakonczyc prace" << endl;
+    cout << "\t7. Zmienic plik" << endl;
+    cout << "\t0. Zakonczyc prace" << endl;
     cin >> a;
     switch(a){
         case 1: {
-            if(baza == NULL){
-            cout << "Podaj nazwe pliku: ";
-            cin >> name;
-            baza = new Database(name);
+            cout << "Podaj nazwe pliku glownego: ";
+            cin >> tempName;
+            index = new prepareDatabase(tempName);
+            if(index->fileRead() == 1){
+                cout << "Blad otwarcia pliku, sprobuj jeszcze raz" << endl;
+                delete index;
             }
-            if(baza->readFile() == 1)
-            cout << "Wczytano poprawnie" << endl;
             else{
-            cout << "Blad wczytywania" << endl;
-            delete baza;
-            baza = NULL;
+                cout << "Wczytano poprawnie, baza gotowa do dalszych operacji" << endl;
+                //*entry = index->openBaseFiles();
+                index->openBaseFiles(&entry);
+                for(int i = 0; i < entry.size(); i++)
+                    cout << entry[i]->returnName() << endl;
+                currentFileIndex = 0;
+                entry[currentFileIndex]->readFile();
+
             }
-            cin.get();
-            cin.get();
+            system("pause");
             break;
         }
         case 2: {
-            cout << "Podaj nazwe pliku i rozszerzenie: ";
+            if(entry.size() > 0){
+                cout << "Baza jest juz otwarta, nie mozna tworzyc nowej" << endl;
+                system("pause");
+                break;
+            }
+            cout << "Podaj nazwe pliku : ";
             cin >> name;
-            baza = new Database(name);
-            baza->addMultipleRows();
+            entry.push_back(new Database(name));
+            system("pause");
+            currentFileIndex = 0;
+            //entry[currentFileIndex]->addMultipleRows();
+            break;
         }
         case 3: {
             system("cls");
             cout << "\t1. Wyswietlic caly plik" << endl;
             cout << "\t2. Wyswietlic pojedyncza linie" << endl;
             cin >> freeUse;
-            if(baza == NULL)
+            if(entry.size() == 0)
                 cout << "Nie utworzony bazy, nie ma co wyswietlic" << endl;
             else if (freeUse == 1)
+<<<<<<< HEAD
+                entry[currentFileIndex]->printRead();
+            else if (freeUse == 2)
+                entry[currentFileIndex]->printOneRow();
+=======
                 baza->printRead();
             else if (freeUse == 2){
+                    //columnWidth = baza->giveWidth();
                     system("cls");
                     char keyboardInput = 0;
                     int index = 1;
                     singleRow = baza->printOneRow(index);
                     columnWidth = baza->giveColumnWidth();
-                    tableHeader = baza->giveFirstRow();
-                    while(keyboardInput != ESC && index < baza->giveNumRows()){
-                        for(int y = 0; y < tableHeader.size(); y++)
-                            cout << "|" << setw(columnWidth[y]) << tableHeader[y];
-                        cout << endl;
-                        for(int y = 0; y < singleRow.size(); y++)
-                            cout << "|" << setw(columnWidth[y]) << singleRow[y];
-                        if(index == ((baza->giveNumRows()) - 1))
-                            cout << endl << "To ostatnia linia, DOWN aby skocnzyc, UP aby pokazac wczesniej" << endl;
-                        if((keyboardInput = getch()) != 27)
-                            keyboardInput = getch();
-                        if(keyboardInput == UP){
-                            if(index > 1)
-                                index--;
-                        }
-                        else if(keyboardInput == DOWN)
-                            index++;
-                        singleRow = baza->printOneRow(index);
-                        system("cls");
-                    }
-                    cout << "Koniec Pliku" << endl;
-                    singleRow.clear();
-                    columnWidth.clear();
-                    tableHeader.clear();
+
+                    cout << tableHeader[1];
             }
+>>>>>>> REmoving printing from method
             else
                 cout << "Nie rozpoznano komendy, powrot do glownego menu" << endl;
             cin.sync();
@@ -94,7 +101,7 @@ int main(){
             break;
         }
         case 4: {
-            if(baza == NULL){
+            if(entry.size() == 0){
                 cout << "Nie utworzono bazy, nie mozna edytowac" << endl;
                 cin.sync();
                 cin.clear();
@@ -112,12 +119,44 @@ int main(){
             cin.ignore();
             switch(*tempSwitch){
                 case '1':{
-                    baza->addRow();
+                    if(entry[currentFileIndex]->returnHeaders(&headers) == 0){
+                        cout << "Baza jest pusta, podaj naglowki ( id dodawane automatycznie, q aby przerwaæ)" << endl;
+                        tempBeforePush.push_back("id");
+                        do{
+                            cout << "Podaj nazwe kolumny: ";
+                            cin >> temp;
+                            if(temp != "q" && temp != "Q")
+                                tempBeforePush.push_back(temp);
+                        }while(temp != "q" && temp != "Q");
+                        toPush.push_back(tempBeforePush);
+                        headers = tempBeforePush;
+                        tempBeforePush.clear();
+                    }
+                    temp = "";
+                    tempBeforePush.push_back(to_string(entry[currentFileIndex]->giveNumRows() + 1));
+                    for(int i = 1; i < headers.size(); i++){
+                        if (temp != "q" && temp != "Q"){
+                            cout << headers[i] << " : ";
+                            cin >> temp;
+                            if (temp != "q" && temp != "Q"){
+                                tempBeforePush.push_back(temp);
+                                temp = "";
+                            }
+                            else
+                                tempBeforePush.push_back(" ");
+                        }
+                        else
+                            tempBeforePush.push_back(" ");
+                    }
+                    toPush.push_back(tempBeforePush);
+                    entry[currentFileIndex]->addRow(toPush);
+                    tempBeforePush.clear();
+                    toPush.clear();
                     break;
                 }
                 case '2':{
                     do{
-                        baza->addRow();
+                        //entry[currentFileIndex]->addRow();
                         cout << "Chcesz dodac nastepna linie? (t/n)";
                         *tempSwitch = getch();
                         if(tolower(*tempSwitch) != 't' && tolower(*tempSwitch) != 'n')
@@ -144,47 +183,89 @@ int main(){
             system("cls");
             cout << "\t1. Zapis do tego samego pliku" << endl;
             cout << "\t2. Zapis do innego pliku" << endl;
-
             cin >> *swNumber;
             switch(*swNumber){
                 case 1:
-                if(!baza->checkName()){
-                    cout << "Podaj nazwe pliku: ";
-                    cin >> name;
-                    baza->changeName(name);
-                }
-                else if(baza->checkRead()){
-                    cout << "Zapisywanie, z zastapieniem poprzednich danych" << endl;
-                *error = baza->saveFile(name);
-                if(*error == 1)
-                    cout << "Zapis udany" << endl;
-                else if (*error == 0)
-                    cout << "Blad otwarcia, nie zapisano nic";
-                }
-                else if(*error == -1)
-                    cout << "Nie wprowadzono zmian do bazy, zaniechano zapisu" << endl;
-
-                delete error;
-                break;
+                    if(!entry[currentFileIndex]->checkName()){
+                        cout << "Podaj nazwe pliku: ";
+                        cin >> name;
+                        entry[currentFileIndex]->changeName(name);
+                    }
+                    else if(entry[currentFileIndex]->checkRead())
+                        cout << "Zapisywanie, z zastapieniem poprzednich danych" << endl;
+                    *error = entry[currentFileIndex]->saveFileTrunc();
+                    if(*error == 1)
+                        cout << "Zapis udany" << endl;
+                    else if (*error == 0)
+                        cout << "Blad otwarcia, nie zapisano nic";
+                    else if(*error == -1)
+                        cout << "Nie wprowadzono zmian do bazy, zaniechano zapisu" << endl;
+                    delete error;
+                    system("pause");
+                    break;
                 case 2: cout << "Podaj nazwe pliku i rozszerzenie: ";
-                cin >> tempName;
-                *error = baza->saveFile(tempName);
-                if(*error == 1)
-                    cout << "Zapis udany" << endl;
-                else if (*error == 0)
-                    cout << "Blad otwarcia, nie zapisano nic";
-                else if (*error == -1)
-                    cout << "Nie wprowadzono zmian w pliku, zaniechano zapisu" << endl;
-                cin.clear();
-                cin.sync();
-                cin.get();
+                    cin >> tempName;
+                    *error = entry[currentFileIndex]->saveFile(tempName);
+                    if(*error == 1)
+                        cout << "Zapis udany" << endl;
+                    else if (*error == 0)
+                        cout << "Blad otwarcia, nie zapisano nic";
+                    else if (*error == -1)
+                        cout << "Nie wprowadzono zmian w pliku, zaniechano zapisu" << endl;
+                    cin.clear();
+                    cin.sync();
+                    cin.get();
                 break;
                 cin.get();
 
             }
             break;
         }
-        case 7: exit;
+        case 7: {
+        system("cls");
+        cout << "\t1. Poprzedni plik" << endl;
+        cout << "\t2. Nastepny plik" << endl;
+        cout << "\t3. Wpisac numer pliku" << endl;
+        cin >> freeUse;
+        switch(freeUse){
+            case 1:
+                if(currentFileIndex > 0){
+                    currentFileIndex--;
+                    freeUse = entry[currentFileIndex]->readFile();
+                    if(freeUse == 0)
+                        cout << "Blad odczytu pliku";
+                    else
+                        cout << "Wczytano poprawnie";
+                    system("pause");
+                }
+                else
+                    cout << "Nie da sie zmniejszyc indeksu" << endl;
+                break;
+            case 2:
+                if(currentFileIndex < entry.size()){
+                    currentFileIndex++;
+                    freeUse = entry[currentFileIndex]->readFile();
+                    if(freeUse == 0)
+                        cout << "Blad odczytu pliku";
+                    else
+                        cout << "Wczytano poprawnie";
+                    system("pause");
+                }
+                else
+                    cout << "Nie da sie wiekszyc indeksu" << endl;
+                break;
+            case 3:
+                do{
+                cout << "\tPodaj indeks pliku z zakresu pomiedzy 0 a " << entry.size() - 1<< " : ";
+                cin >> freeUse;
+                if(freeUse < 0 || freeUse >= entry.size())
+                    cout << "Nie poprawny indeks, podaj jeszcze raz" << endl;
+                }while(freeUse < 0 || freeUse >= entry.size());
+                break;
+            }
+            break;
+        }
+        case 0: exit;
         break;
         default: {
             cout << "Nie poprawna opcja, podaj jeszcze raz" << endl;
@@ -197,6 +278,9 @@ int main(){
         cin.sync();
         system("cls");
     }
-    delete baza;
+    for(vector <Database*>::iterator it = entry.begin(); it != entry.end(); ++it)
+        delete (*it);
+    entry.clear();
+    delete index;
     return 1;
 }
