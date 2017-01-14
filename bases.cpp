@@ -72,6 +72,12 @@ Database::Database(string name){
     width_set = false;
     file_read = false;
 };
+int Database::findRow(string criteria){
+        for(int i = 0; i < base[0].size(); i++)
+            if(base[0][i].compare(criteria) == 0)
+                return i;
+    return -1;
+};
 string Database::returnName(){
     return file_name;
 };
@@ -202,6 +208,27 @@ bool Database::checkRead(){                                             // Check
 bool Database::changeName(string name){                                 // Change file name
     file_name = name;
     return true;
+};
+int Database::sortFileBy(string criteria){
+    int place = findRow(criteria);
+    if(place == -1)
+        return -1;
+    sort(base.begin() + 1, base.end(),
+            [&place](const std::vector<string>& a, const std::vector<string>& b) {
+    return a[place] < b[place];
+});
+return 0;
+};
+vector <vector <string>> Database::searchFor(string rowName, string criteria){
+    vector <vector <string>> toReturn;
+    int place = findRow(rowName);
+    if(place == -1)
+        return toReturn;
+    toReturn.push_back(base[0]);
+    for(int i = 1; i < base.size(); i++)
+        if(base[i][place].compare(criteria) == 0)
+            toReturn.push_back(base[i]);
+    return toReturn;
 };
 int Database::returnHeaders(vector <string>* headerLocation){
     if(base.size() > 0)

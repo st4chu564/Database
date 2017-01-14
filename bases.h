@@ -9,6 +9,7 @@
 #include <conio.h>
 #include <stdio.h>
 #include <sstream>
+#include <algorithm>
 
 #define DOWN 80
 #define UP 72
@@ -27,7 +28,6 @@ private:
     vector <vector <string> > tempStorage;
     vector <string> row;
     string temp;
-    vector <int> column_width;
     int counter;
     int editMethod;
     int max_width;
@@ -36,13 +36,16 @@ private:
     bool size_set;
     bool width_set;
     bool file_read;
+    int findRow(string);
 public:
     Database();
     Database(string);
+    vector <int> column_width;
     string returnName();
     int giveNumColumns();
     int giveNumRows();
     int readFile();
+    int returnHeaders(vector <string>*);
     int saveFile(string);
     int saveFileTrunc();
     int saveFileTrunc(string);
@@ -52,12 +55,13 @@ public:
     bool checkName();
     bool checkRead();
     bool changeName(string);
-    int returnHeaders(vector <string>*);
+    int sortFileBy(string);
     void setWidth();
     void addRow (vector <vector <string>>);
     void finePrint();
     void gotoXY(int,int);
     vector <string> printOneRow(int);
+    vector <vector <string>> searchFor(string, string);
     vector <string> giveFirstRow();
     vector <int> giveColumnWidth();
     void printRead();

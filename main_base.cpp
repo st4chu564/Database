@@ -5,10 +5,10 @@ using namespace std;
 int main(){
     prepareDatabase* index = NULL;
     vector <string> fileIndex, headers, tempBeforePush, singleRow;
-    vector < vector <string>> toPush;
+    vector < vector <string>> toPush, searchResult;
     vector <Database*> entry;
-    string temp, tempName, name;
-    int x = 1, y = 2,a, freeUse, currentFileIndex = -1;
+    string temp, temp2, tempName, name;
+    int x = 1, y = 2,a = 1, freeUse, currentFileIndex = -1;
     while(a != 0){
     int *swNumber = new int;
     int *error = new int;
@@ -22,6 +22,8 @@ int main(){
     cout << "\t5. Wyswietlanie szczegolowe" << endl;
     cout << "\t6. Zapisanie pliku" << endl;
     cout << "\t7. Zmienic plik" << endl;
+    cout << "\t8. Sortowanie" << endl;
+    cout << "\t9. Wyszukiwanie" << endl;
     cout << "\t0. Zakonczyc prace" << endl;
     cin >> a;
     switch(a){
@@ -253,6 +255,45 @@ int main(){
             }
             break;
         }
+        case 8: {
+        while(true){
+            system("cls");
+            cout << "\tPodaj nazwe kolumny wg ktorej sortowac: ";
+            cin >> temp;
+            freeUse = entry[currentFileIndex]->sortFileBy(temp);
+            if(freeUse == 0){
+                system("cls");
+                entry[currentFileIndex]->printRead();
+                system("pause");
+                break;
+            }
+            else if (freeUse == -1){
+                cout << "Nie ma takiej kolumny, sprobuj jeszcze raz" << endl;
+                system("pause");
+            }
+        }
+        break;
+        }
+        case 9: {
+            system("cls");
+            cout << "\tNazwa kolumny: ";
+            cin >> temp;
+            cout << "\tZawartosc: ";
+            cin >> temp2;
+            searchResult = entry[currentFileIndex] -> searchFor(temp, temp2);
+            if(searchResult.size() == 1){
+                cout << "\tNie znaleziono wartosci" << endl;
+                system("pause");
+            }
+            else{
+                for(int i = 0; i < searchResult.size(); i++){
+                    for(int y = 0; y < searchResult[0].size(); y++)
+                        cout << '|' << setw(entry[currentFileIndex]->column_width[y] + 1) << searchResult[i][y];
+                    cout << endl;
+                }
+                system("pause");
+            }
+        };
         case 0: exit;
         break;
         default: {
