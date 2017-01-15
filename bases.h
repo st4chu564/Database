@@ -28,6 +28,7 @@ private:
     vector <vector <string> > tempStorage;
     vector <string> row;
     string temp;
+    int rRC;
     int counter;
     int editMethod;
     int max_width;
@@ -41,11 +42,11 @@ public:
     Database();
     Database(string);
     vector <int> column_width;
-    string returnName();
-    int giveNumColumns();
-    int giveNumRows();
+    string getName();
+    int getNumColumns();
+    int getNumRows();
     int readFile();
-    int returnHeaders(vector <string>*);
+    vector< string> getHeaders();
     int saveFile(string);
     int saveFileTrunc();
     int saveFileTrunc(string);
@@ -54,16 +55,15 @@ public:
     bool createNewFile();
     bool checkName();
     bool checkRead();
-    bool changeName(string);
+    bool setName(string);
     int sortFileBy(string);
     void setWidth();
     void addRow (vector <vector <string>>);
     void finePrint();
     void gotoXY(int,int);
-    vector <string> printOneRow(int);
+    vector <string> getOneRow(char);
     vector <vector <string>> searchFor(string, string);
-    vector <string> giveFirstRow();
-    vector <int> giveColumnWidth();
+    int getColumnWidth(int);
     void printRead();
 };
 
@@ -81,5 +81,6 @@ public:
     int openBaseFiles(vector <Database*>* create);
     bool checkRead();
     int fileRead();
+    int saveBase(string);
     int openFile(Database*);
 };

@@ -57,6 +57,7 @@ Database::Database(){
     counter = 0;
     editMethod = 0;
     lastSavedRecord = 0;
+    rRC = 1;
     size_set = false;
     width_set = false;
     file_read = false;
@@ -68,6 +69,7 @@ Database::Database(string name){
     counter = 0;
     editMethod = 0;
     lastSavedRecord = 0;
+    rRC = 1;
     size_set = false;
     width_set = false;
     file_read = false;
@@ -78,13 +80,13 @@ int Database::findRow(string criteria){
                 return i;
     return -1;
 };
-string Database::returnName(){
+string Database::getName(){
     return file_name;
 };
-int Database::giveNumColumns(){
+int Database::getNumColumns(){
     return num_columns;                                                 // Return number of columns
 };
-int Database::giveNumRows(){
+int Database::getNumRows(){
     return base.size();
 };
 int Database::readFile(){
@@ -205,7 +207,7 @@ bool Database::checkName(){                                             // Check
 bool Database::checkRead(){                                             // Check if file was read
     return file_read;
 };
-bool Database::changeName(string name){                                 // Change file name
+bool Database::setName(string name){                                 // set file name
     file_name = name;
     return true;
 };
@@ -230,11 +232,11 @@ vector <vector <string>> Database::searchFor(string rowName, string criteria){
             toReturn.push_back(base[i]);
     return toReturn;
 };
-int Database::returnHeaders(vector <string>* headerLocation){
+vector <string> Database::getHeaders(){
     if(base.size() > 0)
-        headerLocation = &base[0];
+        return base[0];
     else
-        return 0;
+        return vector< string>();
 };
 void Database::setWidth(){
     if(!width_set){
@@ -256,22 +258,28 @@ void Database::addRow(vector <vector <string>> dataToPush){
     setWidth();
     editMethod = 1;
 };
-vector <int> Database::giveColumnWidth(){
-    return column_width;
+int Database::getColumnWidth(int i){
+    return column_width[i];
 };
-vector <string> Database::printOneRow(int which){
-    return base[which];
+vector <string> Database::getOneRow(char which){
+    if(which == 'f')
+        return base[rRC];
+    else if(which == 'n' && rRC < base.size())
+        return base[++rRC];
+    else if(which == 'p' && rRC > 1)
+        return base[--rRC];
+    else
+        return vector <string>();
+
 };
-/*vector <int> Database::giveWidth(){
-    return column_width;
-};*/
 void Database::printRead(){                                             // Print read content to console
-    system("cls");                                                      // Clear console
+    system("cls");
+    cout << "  ";                                                       // Clear console
     for(int i = 0; i < base.size(); i++){                               // Go through each line
         for(int y = 0; y < num_columns; y++){
             cout << '|' << setw(column_width[y] + 1) << base[i][y];     // Print each field
         }
-    cout << endl;                                                       // Put endl to console
+    cout << endl << "  ";                                                       // Put endl to console
     }
     cin.get();                                                          // Wait for user input, before going further
 };
