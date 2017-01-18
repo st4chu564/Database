@@ -8,7 +8,7 @@ int main(){
     vector < vector <string>> toPush, searchResult;
     vector <Database*> entry;
     string temp, temp2, tempName, name;
-    char answer;
+    char answer, toI;
     int x = 1, y = 2,a = 1, freeUse, cFI = -1;
     while(a != 0){
     int *swNumber = new int;
@@ -26,7 +26,7 @@ int main(){
     cout << "\t8. Sortowanie" << endl;
     cout << "\t9. Wyszukiwanie" << endl;
     cout << "\t0. Zakonczyc prace" << endl;
-    cin >> a;
+    a = (toI = getch()) - '0';
     switch(a){
         case 1: {
             if(index == NULL){
@@ -86,7 +86,7 @@ int main(){
             break;
         }
         case 2: {
-            if(entry.size() > 0){
+            if(index != NULL){
                 cout << "Baza jest juz otwarta, nie mozna tworzyc nowej" << endl;
                 system("pause");
                 break;
@@ -101,14 +101,35 @@ int main(){
             break;
         }
         case 3: {
+            if(index == NULL){
+                cout << "\tNie otworzono bazy.\n\t";
+                system("pause");
+                break;
+            }
             system("cls");
             cout << "\t1. Wyswietlic caly plik" << endl;
             cout << "\t2. Wyswietlic pojedyncza linie" << endl;
             cin >> freeUse;
             if(entry.size() == 0)
                 cout << "Nie utworzony bazy, nie ma co wyswietlic" << endl;
-            else if (freeUse == 1)
-                entry[cFI]->printRead();
+            else if (freeUse == 1){
+                system("cls");
+                    headers = entry[cFI]->getHeaders();
+                    for(int i = 0; i < headers.size(); i++)
+                        cout << "|" << setw(entry[cFI]->column_width[i]) << headers[i];
+                    cout << endl;
+                    singleRow = entry[cFI]->getOneRow('f');
+                    do{
+                        for(int i = 0; i < singleRow.size(); i++)
+                            cout << "|" << setw(entry[cFI]->column_width[i]) << singleRow[i];
+                        cout << endl;
+                        singleRow = entry[cFI]->getOneRow('n');
+                        if(singleRow.size() == 0){
+                            entry[cFI]->resetRRC();
+                            break;
+                        }
+                    }while(true);
+            }
             else if (freeUse == 2){
                 if(headers.size() == 0)
                     cout << "Blad odczytu danych" << endl;
@@ -131,15 +152,13 @@ int main(){
                 cout << "Nie rozpoznano komendy, powrot do glownego menu" << endl;
             cin.sync();
             cin.clear();
-            cin.get();
+            system("pause");
             break;
         }
         case 4: {
-            if(entry.size() == 0){
-                cout << "Nie utworzono bazy, nie mozna edytowac" << endl;
-                cin.sync();
-                cin.clear();
-                cin.get();
+            if(index == NULL){
+                cout << "\tNie otworzono bazy.\n\t";
+                system("pause");
                 break;
             }
             cout << "\t\t\t Edytowanie" << endl;
@@ -209,12 +228,22 @@ int main(){
             break;
         }
         case 5: {
+            if(index == NULL){
+                cout << "\tNie otworzono bazy.\n\t";
+                system("pause");
+                break;
+            }
             cout << "Wyswietlanie" << endl;
             cin.get();
             cin.get();
             break;
         }
         case 6: {
+            if(index == NULL){
+                cout << "\tNie otworzono bazy.\n\t";
+                system("pause");
+                break;
+            }
             system("cls");
             cout << "\t1. Zapis do tego samego pliku" << endl;
             cout << "\t2. Zapis do innego pliku" << endl;
@@ -257,69 +286,98 @@ int main(){
             break;
         }
         case 7: {
-        system("cls");
-        cout << "\t1. Poprzedni plik" << endl;
-        cout << "\t2. Nastepny plik" << endl;
-        cout << "\t3. Wpisac numer pliku" << endl;
-        cin >> freeUse;
-        switch(freeUse){
-            case 1:
-                if(cFI > 0){
-                    cFI--;
-                    freeUse = entry[cFI]->readFile();
-                    if(freeUse == 0)
-                        cout << "Blad odczytu pliku";
-                    else
-                        cout << "Wczytano poprawnie";
-                    system("pause");
-                }
-                else
-                    cout << "Nie da sie zmniejszyc indeksu" << endl;
-                break;
-            case 2:
-                if(cFI < entry.size()){
-                    cFI++;
-                    freeUse = entry[cFI]->readFile();
-                    if(freeUse == 0)
-                        cout << "Blad odczytu pliku";
-                    else
-                        cout << "Wczytano poprawnie";
-                    system("pause");
-                }
-                else
-                    cout << "Nie da sie wiekszyc indeksu" << endl;
-                break;
-            case 3:
-                do{
-                cout << "\tPodaj indeks pliku z zakresu pomiedzy 0 a " << entry.size() - 1<< " : ";
-                cin >> freeUse;
-                if(freeUse < 0 || freeUse >= entry.size())
-                    cout << "Nie poprawny indeks, podaj jeszcze raz" << endl;
-                }while(freeUse < 0 || freeUse >= entry.size());
+            if(index == NULL){
+                cout << "\tNie otworzono bazy.\n\t";
+                system("pause");
                 break;
             }
+            system("cls");
+            cout << "\t1. Poprzedni plik" << endl;
+            cout << "\t2. Nastepny plik" << endl;
+            cout << "\t3. Wpisac numer pliku" << endl;
+            cin >> freeUse;
+            switch(freeUse){
+                case 1:
+                    if(cFI > 0){
+                        cFI--;
+                        freeUse = entry[cFI]->readFile();
+                        if(freeUse == 0)
+                            cout << "Blad odczytu pliku";
+                        else
+                            cout << "Wczytano poprawnie";
+                        system("pause");
+                    }
+                    else
+                        cout << "Nie da sie zmniejszyc indeksu" << endl;
+                    break;
+                case 2:
+                    if(cFI < entry.size()){
+                        cFI++;
+                        freeUse = entry[cFI]->readFile();
+                        if(freeUse == 0)
+                            cout << "Blad odczytu pliku";
+                        else
+                            cout << "Wczytano poprawnie";
+                        system("pause");
+                    }
+                    else
+                        cout << "Nie da sie wiekszyc indeksu" << endl;
+                    break;
+                case 3:
+                    do{
+                    cout << "\tPodaj indeks pliku z zakresu pomiedzy 0 a " << entry.size() - 1<< " : ";
+                    cin >> freeUse;
+                    if(freeUse < 0 || freeUse >= entry.size())
+                        cout << "Nie poprawny indeks, podaj jeszcze raz" << endl;
+                    }while(freeUse < 0 || freeUse >= entry.size());
+                    break;
+                }
             break;
         }
         case 8: {
-        while(true){
-            system("cls");
-            cout << "\tPodaj nazwe kolumny wg ktorej sortowac: ";
-            cin >> temp;
-            freeUse = entry[cFI]->sortFileBy(temp);
-            if(freeUse == 0){
-                system("cls");
-                entry[cFI]->printRead();
+            if(index == NULL){
+                cout << "\tNie otworzono bazy.\n\t";
                 system("pause");
                 break;
             }
-            else if (freeUse == -1){
-                cout << "Nie ma takiej kolumny, sprobuj jeszcze raz" << endl;
-                system("pause");
+            while(true){
+                system("cls");
+                cout << "\tPodaj nazwe kolumny wg ktorej sortowac: ";
+                cin >> temp;
+                freeUse = entry[cFI]->sortFileBy(temp);
+                if(freeUse == 0){
+                    system("cls");
+                    headers = entry[cFI]->getHeaders();
+                    for(int i = 0; i < headers.size(); i++)
+                        cout << "|" << setw(entry[cFI]->column_width[i]) << headers[i];
+                    cout << endl;
+                    singleRow = entry[cFI]->getOneRow('f');
+                    do{
+                        for(int i = 0; i < singleRow.size(); i++)
+                            cout << "|" << setw(entry[cFI]->column_width[i]) << singleRow[i];
+                        cout << endl;
+                        singleRow = entry[cFI]->getOneRow('n');
+                        if(singleRow.size() == 0){
+                            entry[cFI]->resetRRC();
+                            break;
+                        }
+                    }while(true);
+                    system("pause");
+                    break;
+                }
+                else if (freeUse == -1){
+                    cout << "Nie ma takiej kolumny, sprobuj jeszcze raz" << endl;
+                    system("pause");
+                }
             }
-        }
-        break;
+            break;
         }
         case 9: {
+            if(index == NULL){
+                cout << "\tNie otworzono bazy.\n\t";
+                system("pause");
+                break;
+            }
             system("cls");
             cout << "\tNazwa kolumny: ";
             cin >> temp;
@@ -327,7 +385,7 @@ int main(){
             cin.sync();
             cout << "\tZawartosc: ";
             getline(cin, temp2);
-            searchResult = entry[cFI] -> searchFor(temp, temp2);
+            searchResult = entry[cFI] -> searchFor(temp, temp2,1);
             if(searchResult.size() == 1){
                 cout << "\tNie znaleziono wartosci" << endl;
                 system("pause");
@@ -342,11 +400,10 @@ int main(){
             }
         };
         case 0: exit;
-        break;
+            break;
         default: {
             cout << "Nie poprawna opcja, podaj jeszcze raz" << endl;
-            cin.get();
-            cin.get();
+            system("pause");
             break;
         }
     }

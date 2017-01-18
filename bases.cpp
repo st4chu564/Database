@@ -154,7 +154,6 @@ int Database::saveFile(string whereTo){
         saveFileAdd();
     else
         saveFileTrunc(whereTo);
-
 };
 int Database::saveFileAdd(){
     saveFileAdd(file_name);
@@ -221,22 +220,23 @@ int Database::sortFileBy(string criteria){
 });
 return 0;
 };
-vector <vector <string>> Database::searchFor(string rowName, string criteria){
+vector <vector <string>> Database::searchFor(string rowName, string criteria, int choice){
     vector <vector <string>> toReturn;
     int place = findRow(rowName);
     if(place == -1)
         return toReturn;
     toReturn.push_back(base[0]);
-    for(int i = 1; i < base.size(); i++)
-        if(base[i][place].compare(criteria) == 0)
-            toReturn.push_back(base[i]);
+    if(choice == 1)
+        for(int i = 1; i < base.size(); i++){
+            std::size_t found = base[i][place].find(criteria);
+            if(found!=std::string::npos)
+                toReturn.push_back(base[i]);
+        }
+    else if(choice == 2)
+        for(int i = 1; i < base.size(); i++)
+            if(base[i][place].compare(criteria) == 0)
+                toReturn.push_back(base[i]);
     return toReturn;
-};
-vector <string> Database::getHeaders(){
-    if(base.size() > 0)
-        return base[0];
-    else
-        return vector< string>();
 };
 void Database::setWidth(){
     if(!width_set){
@@ -258,30 +258,20 @@ void Database::addRow(vector <vector <string>> dataToPush){
     setWidth();
     editMethod = 1;
 };
-int Database::getColumnWidth(int i){
-    return column_width[i];
+vector <string> Database::getHeaders(){
+    return base[0];                                                     // Return header row
 };
 vector <string> Database::getOneRow(char which){
     if(which == 'f')
-        return base[rRC];
+        return base[rRC];                                               // Return first row
     else if(which == 'n' && rRC < base.size())
-        return base[++rRC];
+        return base[++rRC];                                             // Return next row
     else if(which == 'p' && rRC > 1)
-        return base[--rRC];
-    else
-        return vector <string>();
-
+        return base[--rRC];                                             // Return previous row
+    return vector <string>();                                           // Empty if outbounds
 };
-void Database::printRead(){                                             // Print read content to console
-    system("cls");
-    cout << "  ";                                                       // Clear console
-    for(int i = 0; i < base.size(); i++){                               // Go through each line
-        for(int y = 0; y < num_columns; y++){
-            cout << '|' << setw(column_width[y] + 1) << base[i][y];     // Print each field
-        }
-    cout << endl << "  ";                                                       // Put endl to console
-    }
-    cin.get();                                                          // Wait for user input, before going further
+void Database::resetRRC(){
+rRC = 1;                                                                // Reset Row Counter
 };
 void Database::gotoXY(int x, int y){                                    // Method, for changing cursor position
     COORD c;

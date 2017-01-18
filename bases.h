@@ -57,14 +57,13 @@ public:
     bool checkRead();
     bool setName(string);
     int sortFileBy(string);
+    void resetRRC();
     void setWidth();
     void addRow (vector <vector <string>>);
     void finePrint();
     void gotoXY(int,int);
     vector <string> getOneRow(char);
-    vector <vector <string>> searchFor(string, string);
-    int getColumnWidth(int);
-    void printRead();
+    vector <vector <string>> searchFor(string, string, int);
 };
 
 class prepareDatabase{
