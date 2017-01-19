@@ -9,7 +9,7 @@ std::string to_string(const T& obj)
 }
 prepareDatabase::prepareDatabase(string name){
     read = false;
-    file_name = name;
+    fileName = name;
 };
 int prepareDatabase::addFilesToBase(string name){
     baseFilesNames.push_back(name);
@@ -26,7 +26,7 @@ bool prepareDatabase::checkRead(){
 };
 int prepareDatabase::fileRead(){
     ifstream input;
-    input.open(file_name.c_str());
+    input.open(fileName.c_str());
     if(!input.is_open()){
         return 1;
     }
@@ -47,14 +47,21 @@ int prepareDatabase::checkNameCorrectness(){
     }
     return 0; // Name does have an .txt extension, it's correct
 };
-int prepareDatabase::openFile(Database* base){
-
-};
+int prepareDatabase::saveBase(){
+    ofstream output;
+    output.open(fileName.c_str());
+    if(!output.is_open())
+        return 1;
+    for(int i = 0; i < baseFilesNames.size(); i++)
+        output << baseFilesNames[i] << endl;
+    output.close();
+    return 0;
+}
 Database::Database(){
     file_name = "";
-    max_width = 0;
-    num_columns = 0;
-    counter = 0;
+    maxWidth = 0;
+    numColumns = 0;
+    columnCounter = 0;
     editMethod = 0;
     lastSavedRecord = 0;
     rRC = 1;
@@ -64,9 +71,9 @@ Database::Database(){
 };
 Database::Database(string name){
     file_name = name;
-    max_width = 0;
-    num_columns = 0;
-    counter = 0;
+    maxWidth = 0;
+    numColumns = 0;
+    columnCounter = 0;
     editMethod = 0;
     lastSavedRecord = 0;
     rRC = 1;
@@ -84,7 +91,7 @@ string Database::getName(){
     return file_name;
 };
 int Database::getNumColumns(){
-    return num_columns;                                                 // Return number of columns
+    return numColumns;                                                 // Return number of columns
 };
 int Database::getNumRows(){
     return base.size();
@@ -94,42 +101,44 @@ int Database::readFile(){
     input.open(file_name.c_str());                              	    // Open input file
     if(!input.is_open())
         return 0;                                               	    // Opening failed, either non-existent file, or other error
+    else if(input.peek() == std::ifstream::traits_type::eof())          // Check if file is empty
+        return 2;
     char *ch = new char;                                        	    // Declare and create temporal variable
     input.get(*ch);                                             	    // Get first character
     while(!input.eof()){                                        	    // While end of file is not reached
         if(*ch == '\n' || *ch == '\r'){
             if(!width_set){
-                column_width.push_back(temp.length());          	    // Add columns to column_width vector
-                if(temp.length() > max_width)                   	    // Finding maxa column width
-                    max_width = temp.length();
+                columnWidth.push_back(temp.length());          	    // Add columns to columnWidth vector
+                if(temp.length() > maxWidth)                   	    // Finding max column width
+                    maxWidth = temp.length();
                 width_set = true;                               	    // Block adding any more column to column width
             }
             else{
-                if (temp.length() > column_width[counter])      	    // Check last column length, save if grater
-                    column_width[counter] = temp.length();
-                if (temp.length() > max_width)
-                    max_width = temp.length();
-                counter = 0;                                    	    // Zero counter
+                if (temp.length() > columnWidth[columnCounter])      	// Check last column length, save if grater
+                    columnWidth[columnCounter] = temp.length();
+                if (temp.length() > maxWidth)
+                    maxWidth = temp.length();
+                columnCounter = 0;                                    	// Zero counter
             }
             row.push_back(temp);                                	    // Add temp to row, to push later to base
             base.push_back(row);                                	    // Push to base
             if(!size_set)
-                num_columns = row.size();                       	    // Set number of columns
+                numColumns = row.size();                       	    // Set number of columns
             row.clear();                                        	    // Clear row for further use
             temp = "";                                          	    // Clear temporary string for further use
         }
-        else if (*ch == '\t'){                                  	    // Add columns to column_width vector
+        else if (*ch == '\t'){                                  	    // Add columns to columnWidth vector
             if(!width_set){
-                column_width.push_back(temp.length());
-                if(temp.length() > max_width)
-                    max_width = temp.length();
+                columnWidth.push_back(temp.length());
+                if(temp.length() > maxWidth)
+                    maxWidth = temp.length();
             }
             else{
-                if(temp.length() > column_width[counter])       	    // Check current field length, save if greater
-                    column_width[counter] = temp.length();
-                if(temp.length() > max_width)
-                    max_width = temp.length();
-                counter++;                                      	    // Next column
+                if(temp.length() > columnWidth[columnCounter])       	    // Check current field length, save if greater
+                    columnWidth[columnCounter] = temp.length();
+                if(temp.length() > maxWidth)
+                    maxWidth = temp.length();
+                columnCounter++;                                      	    // Next column
             }
             row.push_back(temp);                                	    // Prepare row to push to base
             temp = "";                                          	    // Clear string for next field
@@ -145,18 +154,13 @@ int Database::readFile(){
     row.clear();                                                    	// Clear vector for further use
     temp = "";                                                      	// Clear string for further use
     lastSavedRecord = base.size() - 1;                                  // Mark the last saved ( read here) record
-    return 1;                                                       	// Read succesful
+    return 1;                                                       	// Read succesfull
 };
 int Database::saveFile(string whereTo){
-    if(editMethod == 1)
-        saveFileTrunc(whereTo);
-    else if (editMethod == 2 && file_read)
-        saveFileAdd();
+    if (editMethod == 2 && file_read)
+        saveFileAdd(whereTo);
     else
         saveFileTrunc(whereTo);
-};
-int Database::saveFileAdd(){
-    saveFileAdd(file_name);
 };
 int Database::saveFileAdd(string name){
     ofstream output;
@@ -164,17 +168,14 @@ int Database::saveFileAdd(string name){
     if (!output.is_open())
         return 0;
     for(int i = lastSavedRecord; i < base.size(); i++){
-        for(int y = 0; y < num_columns; y++)                            // Another loop to go through each element
-            if(y == num_columns - 1)                                    // If it's not the end of a line, output element
+        for(int y = 0; y < numColumns; y++)                            // Another loop to go through each element
+            if(y == numColumns - 1)                                    // If it's not the end of a line, output element
                 output << base[i][y];
             else                                                        // If it is, output element and seperator \t
                 output << base[i][y] << '\t';
     }
     editMethod = 0;
     return 1;
-};
-int Database::saveFileTrunc(){                                          // Save file, destroying previous content in file, if any, using default file name
-    return saveFileTrunc(file_name);
 };
 int Database::saveFileTrunc(string name){                               // Save as above, but with name passed as parameter
     ofstream output;                                                    // Save file, destroying previous content in file, if any
@@ -184,8 +185,8 @@ int Database::saveFileTrunc(string name){                               // Save 
     else if (editMethod == 0)                                           // If file was not editted, return -1
         return -1;
     for(int i = 0; i < base.size(); i++){                               // Actual saving loop
-        for(int y = 0; y < num_columns; y++)                            // Another loop to go through each element
-            if(y == num_columns - 1)                                    // If it's not the end of a line, output element
+        for(int y = 0; y < numColumns; y++)                             // Another loop to go through each element
+            if(y == numColumns - 1)                                     // If it's not the end of a line, output element
                 output << base[i][y];
             else                                                        // If it is, output element and seperator \t
                 output << base[i][y] << '\t';
@@ -206,7 +207,7 @@ bool Database::checkName(){                                             // Check
 bool Database::checkRead(){                                             // Check if file was read
     return file_read;
 };
-bool Database::setName(string name){                                 // set file name
+bool Database::setName(string name){                                    // set file name
     file_name = name;
     return true;
 };
@@ -240,18 +241,18 @@ vector <vector <string>> Database::searchFor(string rowName, string criteria, in
 };
 void Database::setWidth(){
     if(!width_set){
-        for(int i = 0; i < num_columns; i++)
-            column_width.push_back(base[0][i].length());
+        for(int i = 0; i < numColumns; i++)
+            columnWidth.push_back(base[0][i].length());
         width_set = true;
     }
     for(int i = 1; i < base.size(); i++){
-        for(int y = 0; y < num_columns; y++)
-            if(column_width[y] < base[i][y].length())
-                column_width[y] = base[i][y].length();
+        for(int y = 0; y < numColumns; y++)
+            if(columnWidth[y] < base[i][y].length())
+                columnWidth[y] = base[i][y].length();
     }
 };
 void Database::addRow(vector <vector <string>> dataToPush){
-    num_columns = dataToPush[0].size();
+    numColumns = dataToPush[0].size();
     for(int i = 0; i < dataToPush.size(); i++){
         base.push_back(dataToPush[i]);
     }
@@ -264,7 +265,7 @@ vector <string> Database::getHeaders(){
 vector <string> Database::getOneRow(char which){
     if(which == 'f')
         return base[rRC];                                               // Return first row
-    else if(which == 'n' && rRC < base.size())
+    else if(which == 'n' && rRC < base.size() - 1)
         return base[++rRC];                                             // Return next row
     else if(which == 'p' && rRC > 1)
         return base[--rRC];                                             // Return previous row

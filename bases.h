@@ -22,17 +22,16 @@ using namespace std;
 
 class Database{
 private:
-    string file_name;
-    stringstream ss;
-    vector <vector <string> > base;
-    vector <vector <string> > tempStorage;
-    vector <string> row;
-    string temp;
-    int rRC;
-    int counter;
-    int editMethod;
-    int max_width;
-    int num_columns;
+    string file_name;                                           // Name of the opened file
+    stringstream ss;                                            // Used in to_string conversion
+    vector <vector <string> > base;                             // Main vector keeping records from file
+    vector <string> row;                                        // Var keeping read for a file row to push to main vector
+    string temp;                                                // Same as above, but contains only a single cell rather than whole row
+    int rRC;                                                    // returnRowCounter used to keep track of returned rows
+    int columnCounter;                                          // Used in setting column width while reading
+    int editMethod;                                             // Changes save method
+    int maxWidth;                                               // Keeps track of cell width, then it goes to vector if needed
+    int numColumns;                                             //
     int lastSavedRecord;
     bool size_set;
     bool width_set;
@@ -41,16 +40,14 @@ private:
 public:
     Database();
     Database(string);
-    vector <int> column_width;
+    vector <int> columnWidth;
     string getName();
     int getNumColumns();
     int getNumRows();
     int readFile();
     vector< string> getHeaders();
     int saveFile(string);
-    int saveFileTrunc();
     int saveFileTrunc(string);
-    int saveFileAdd();
     int saveFileAdd(string);
     bool createNewFile();
     bool checkName();
@@ -69,7 +66,7 @@ public:
 class prepareDatabase{
 private:
     bool read;
-    string file_name;
+    string fileName;
     vector <string> baseFilesNames;
     string temp;
 public:
@@ -80,6 +77,5 @@ public:
     int openBaseFiles(vector <Database*>* create);
     bool checkRead();
     int fileRead();
-    int saveBase(string);
-    int openFile(Database*);
+    int saveBase();
 };
