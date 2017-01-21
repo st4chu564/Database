@@ -153,7 +153,7 @@ int Database::readFile(){
     file_read = true;                                               	// Mark file as read
     row.clear();                                                    	// Clear vector for further use
     temp = "";                                                      	// Clear string for further use
-    lastSavedRecord = base.size() - 1;                                  // Mark the last saved ( read here) record
+    lastSavedRecord = base.size();                                  // Mark the last saved ( read here) record
     return 1;                                                       	// Read succesfull
 };
 int Database::saveFile(string whereTo){
@@ -166,22 +166,24 @@ int Database::saveFileAdd(string name){
     ofstream output;
     output.open(name.c_str(), std::ofstream::app);
     if (!output.is_open())
-        return 0;
+        return 1;
     for(int i = lastSavedRecord; i < base.size(); i++){
-        for(int y = 0; y < numColumns; y++)                            // Another loop to go through each element
-            if(y == numColumns - 1)                                    // If it's not the end of a line, output element
+        for(int y = 0; y < numColumns; y++)
+            if(y == numColumns - 1)                                     // If it's not the end of a line, output element
                 output << base[i][y];
             else                                                        // If it is, output element and seperator \t
                 output << base[i][y] << '\t';
+        output << endl;
     }
     editMethod = 0;
-    return 1;
+    lastSavedRecord = base.size();
+    return 0;
 };
 int Database::saveFileTrunc(string name){                               // Save as above, but with name passed as parameter
     ofstream output;                                                    // Save file, destroying previous content in file, if any
     output.open(name.c_str(), std::ofstream::trunc);                    // Create output file
     if(!output.is_open())                                               // Check if output is open
-        return 0;                                                       // If not, return 0
+        return 1;                                                       // If not, return 0
     else if (editMethod == 0)                                           // If file was not editted, return -1
         return -1;
     for(int i = 0; i < base.size(); i++){                               // Actual saving loop
@@ -194,7 +196,8 @@ int Database::saveFileTrunc(string name){                               // Save 
     }
     output.close();                                                     // Close file
     editMethod = 0;
-    return 1;                                                           // Return 1, after everything went better than expected
+    lastSavedRecord = base.size();
+    return 0;                                                           // Return 1, after everything went better than expected
 };
 bool Database::checkName(){                                             // Check if file name was set
     if(file_name == ""){
@@ -257,7 +260,8 @@ void Database::addRow(vector <vector <string>> dataToPush){
         base.push_back(dataToPush[i]);
     }
     setWidth();
-    editMethod = 1;
+    if(editMethod != 1)
+        editMethod = 2;
 };
 vector <string> Database::getHeaders(){
     return base[0];                                                     // Return header row
@@ -273,6 +277,16 @@ vector <string> Database::getOneRow(char which){
 };
 void Database::resetRRC(){
 rRC = 1;                                                                // Reset Row Counter
+};
+int Database::removeRow(int which){
+    if(which > base.size() || which == 0)
+        return 1;
+    base.erase(base.begin() + which);
+    editMethod = 1;
+    return 0;
+};
+int Database::getLastID(){
+    return stoi(base[base.size()][0]);
 };
 void Database::gotoXY(int x, int y){                                    // Method, for changing cursor position
     COORD c;

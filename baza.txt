@@ -1,0 +1,6 @@
+id	imie	nazwisko	wiek	notatki
+1	dawid	stachowiak	22	 
+3	kamil	sieka	22	 
+4	marcin	madej	35	qmk
+5	oskar	wojnowski	28	qmk
+6	rafal	szczygiol	30	qmk

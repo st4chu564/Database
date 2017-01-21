@@ -49,12 +49,14 @@ public:
     int saveFile(string);
     int saveFileTrunc(string);
     int saveFileAdd(string);
+    int getLastID();
     bool createNewFile();
     bool checkName();
     bool checkRead();
     bool setName(string);
     int sortFileBy(string);
     void resetRRC();
+    int removeRow(int);
     void setWidth();
     void addRow (vector <vector <string>>);
     void finePrint();

@@ -20,7 +20,7 @@ int main(){
     cout << "\t2. Stworzyc nowa baze" << endl;
     cout << "\t3. Wyswietlic plik" << endl;
     cout << "\t4. Edytowac plik" << endl;
-    cout << "\t5. Wyswietlanie szczegolowe" << endl;
+    cout << "\t5. Usuwanie linii" << endl;
     cout << "\t6. Zapisanie pliku" << endl;
     cout << "\t7. Zmienic plik" << endl;
     cout << "\t8. Sortowanie" << endl;
@@ -249,7 +249,7 @@ int main(){
                         tempBeforePush.clear();
                     }
                     temp = "";
-                    tempBeforePush.push_back(to_string(file[cFI]->getNumRows()));
+                    tempBeforePush.push_back(to_string(file[cFI]->getLastID()));
                     for(int i = 1; i < headers.size(); i++){
                         if (temp != "q" && temp != "Q"){
                             cout << headers[i] << " : ";
@@ -280,9 +280,54 @@ int main(){
                     }while(tolower(*tempSwitch) == 't');
                     break;
                 }
-                case '3':{
-                    cout << "Powrot do glownego menu" << endl;
-                    break;
+                case '3':{system("cls");
+                    cout << "Wiersz: ";
+                    for(int i = 0; i < headers.size(); i++)
+                        cout << "|" << setw(file[cFI]->columnWidth[i] + 1) << headers[i];
+                    cout << endl;
+                    singleRow = file[cFI]->getOneRow('f');
+                    int *rowCount = new int;
+                    *rowCount = 1;
+                    do{
+                        cout << *rowCount << ".      ";
+                        *rowCount = *rowCount + 1;
+                        for(int i = 0; i < singleRow.size(); i++)
+                            cout << "|" << setw(file[cFI]->columnWidth[i] + 1) << singleRow[i];
+                        cout << endl;
+                        singleRow = file[cFI]->getOneRow('n');
+                        if(singleRow.empty()){
+                            file[cFI]->resetRRC();
+                        }
+                    }while(!singleRow.empty());
+                    error = new int;
+                    do{
+                    cout << "Ktora linie chcesz usunac?: " << endl;
+                    cin >> freeUse;
+                    if(freeUse < 0)
+                        break;
+                    *error = file[cFI]->removeRow(freeUse);
+                    }while(freeUse <= 1 && *error != 0);
+                    delete error;
+                    system("cls");
+                    headers = file[cFI]->getHeaders();
+                    if(headers.size() == 0)
+                        cout << "Blad odczytu danych lub baza jest pusta" << endl;
+                    else{
+                        for(int i = 0; i < headers.size(); i++)
+                            cout << "|" << setw(file[cFI]->columnWidth[i] + 1) << headers[i];
+                        cout << endl;
+                        singleRow = file[cFI]->getOneRow('f');
+                        do{
+                            for(int i = 0; i < singleRow.size(); i++)
+                                cout << "|" << setw(file[cFI]->columnWidth[i] + 1) << singleRow[i];
+                            cout << endl;
+                            singleRow = file[cFI]->getOneRow('n');
+                            if(singleRow.empty()){
+                                file[cFI]->resetRRC();
+                            }
+                        }while(!singleRow.empty());
+                    }
+                system("pause");
                 }
             }
             getch();
@@ -290,15 +335,8 @@ int main(){
             break;
         }
         case 5: {
-            if(index == NULL){
-                cout << "\tNie otworzono bazy.\n\t";
-                system("pause");
-                break;
-            }
-            cout << "Wyswietlanie" << endl;
-            cin.get();
-            cin.get();
-            break;
+
+        break;
         }
         case 6: {
             if(index == NULL){
@@ -312,17 +350,11 @@ int main(){
             cin >> *swNumber;
             switch(*swNumber){
                 case 1:
-                    if(!file[cFI]->checkName()){
-                        cout << "Podaj nazwe pliku: ";
-                        cin >> name;
-                        file[cFI]->setName(name);
-                    }
-                    else if(file[cFI]->checkRead())
-                        cout << "Zapisywanie, z zastapieniem poprzednich danych" << endl;
+                    error = new int;
                     *error = file[cFI]->saveFile(file[cFI]->getName());
-                    if(*error == 1)
+                    if(*error == 0)
                         cout << "Zapis udany" << endl;
-                    else if (*error == 0)
+                    else if (*error == 1)
                         cout << "Blad otwarcia, nie zapisano nic";
                     else if(*error == -1)
                         cout << "Nie wprowadzono zmian do bazy, zaniechano zapisu" << endl;
