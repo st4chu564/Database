@@ -50,6 +50,7 @@ public:
     int saveFileTrunc(string);
     int saveFileAdd(string);
     int getLastID();
+    int addFileToBase(string);
     bool createNewFile();
     bool checkName();
     bool checkRead();

@@ -9,7 +9,7 @@ int main(){
     vector <Database*> file;                                                    // vector of files in base
     string temp, temp2, tempName, name;                                         // Temporal strings
     char answer, toI;                                                           // Answer variables
-    int a = 1, freeUse, cFI = -1, kurwa;                                               // cFI = Current File Index, a = switch variable, freeUse = just a free var
+    int a = 1, freeUse, cFI = -1;                                               // cFI = Current File Index, a = switch variable, freeUse = just a free var
     while(a != 0){
     int *swNumber = new int;                                                    // Dynamic number catching
     int *error = new int;                                                       // Dynamic error catching number
@@ -17,7 +17,7 @@ int main(){
         cout << "\tAktualny plik: " << file[cFI]->getName() << endl;
     cout << "\tCo chcesz robic?" << endl;
     cout << "\t1. Wczytac baze" << endl;
-    cout << "\t2. Stworzyc nowa baze" << endl;
+    cout << "\t2. Stworzyc nowa plik" << endl;
     cout << "\t3. Wyswietlic plik" << endl;
     cout << "\t4. Edytowac plik" << endl;
     cout << "\t5. Usuwanie linii" << endl;
@@ -107,36 +107,69 @@ int main(){
             break;
         }
         case 2: {
-            if(index != NULL){
-                cout << "Aktualnie otwarta jest baza, czy chcesz ja zamknac?" << endl;
-                answer = tolower(getch());
-                if(answer == 't'){
-                    for(int i = 0; i < file.size(); i++)
-                        file[cFI]->saveFile(file[cFI]->getName());
-                    index->saveBase();
-                    headers.clear();
-                    for(vector <Database*>::iterator it = file.begin(); it != file.end(); ++it)
-                        delete (*it);
-                    file.clear();
-                    delete index;
-                }
-                else{
-                    cout << "Anulowano otwieranie nowej bazy" << endl;
-                    system("pause");
-                    break;
+            system("cls");
+            cout << "\t1. Stworzyc nowa baze" << endl;
+            cout << "\t2. Dodac plik do istniejacej bazy" << endl;
+            cin >> freeUse;
+            if(freeUse == 1){
+                if(index != NULL){
+                    cout << "Aktualnie otwarta jest baza, czy chcesz ja zamknac?" << endl;
+                    answer = tolower(getch());
+                    if(answer == 't'){
+                        for(int i = 0; i < file.size(); i++)
+                            file[cFI]->saveFile(file[cFI]->getName());
+                        index->saveBase();
+                        headers.clear();
+                        for(vector <Database*>::iterator it = file.begin(); it != file.end(); ++it)
+                            delete (*it);
+                        file.clear();
+                        delete index;
+                    }
+                    else{
+                        cout << "Anulowano otwieranie nowej bazy" << endl;
+                        system("pause");
+                    }
                 }
             }
-            cout << "Podaj nazwe pliku glownego: ";
-            cin >> name;
-            index = new prepareDatabase(name + ".txt");
-            cout << "Podaj nazwe pierwszego pliku ";
-            cin >> name;
-            file.push_back(new Database(name + ".txt"));
-            cFI = 0;
-            index->addFilesToBase(name + ".txt");
-            file[cFI]->saveFile(name + ".txt");
-            index->saveBase();
-            system("pause");
+            else{
+                system("cls");
+                if(index == NULL){
+                    cout << "\tNie ma otwartej bazy, czy chcesz stworzyc nowa?" << endl;
+                    cin.clear();
+                    cin.sync();
+                    answer = tolower(getch());
+                    if(answer == 't'){
+                        cout << "\tPodaj nazwe pliku glownego: (bez rozszerzenia) ";
+                        cin >> name;
+                        index = new prepareDatabase(name + ".txt");
+                        index->saveBase();
+                        system("pause");
+                    }
+                    else{
+                        cout << "\tAnulowano otwieranie nowej bazy" << endl;
+                        system("pause");
+                    }
+                }
+                if(index != NULL){
+                cin.clear();
+                cin.sync();
+                cout << "\tPodaj nazwe dodawanego pliku: ";
+                getline(cin, temp);
+                size_t *find = new size_t(temp.find(".txt"));
+                if(*find == string::npos){
+                    temp += ".txt";
+                }
+                delete find;
+                index->addFilesToBase(temp);
+                index->saveBase();
+                file.push_back(new Database(temp));
+                cFI = file.size() - 1;
+               // file[cFI]->saveFile(file[cFI]->getName());
+                cout << "\tZaleca sie dodanie rekordu do pliku przed dalszymi operacjami" << endl << "\t";
+                system("pause");
+                }
+
+            }
             break;
         }
         case 3: {
