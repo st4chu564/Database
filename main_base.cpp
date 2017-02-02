@@ -11,21 +11,19 @@ int main(){
     char answer, toI;                                                           // Answer variables
     int a = 1, freeUse, cFI = -1;                                               // cFI = Current File Index, a = switch variable, freeUse = just a free var
     while(a != 0){
-    int *swNumber = new int;                                                    // Dynamic number catching
     int *error = new int;                                                       // Dynamic error catching number
     if(cFI != -1)                                                               // If base open, then display its name
-        cout << "\tAktualny plik: " << file[cFI]->getName() << endl;
-    cout << "\tCo chcesz robic?" << endl;
-    cout << "\t1. Wczytac baze" << endl;
-    cout << "\t2. Stworzyc nowa plik" << endl;
-    cout << "\t3. Wyswietlic plik" << endl;
-    cout << "\t4. Edytowac plik" << endl;
-    cout << "\t5. Usuwanie linii" << endl;
-    cout << "\t6. Zapisanie pliku" << endl;
-    cout << "\t7. Zmienic plik" << endl;
-    cout << "\t8. Sortowanie" << endl;
-    cout << "\t9. Wyszukiwanie" << endl;
-    cout << "\t0. Zakonczyc prace" << endl;
+        cout << "Aktualny plik: " << file[cFI]->getName() << endl;
+    cout << "Co chcesz robic?" << endl;
+    cout << "1. Wczytac baze" << endl;
+    cout << "2. Stworzyc nowa plik" << endl;
+    cout << "3. Wyswietlic plik" << endl;
+    cout << "4. Edytowac plik" << endl;
+    cout << "5. Zapisanie pliku" << endl;
+    cout << "6. Zmienic plik" << endl;
+    cout << "7. Sortowanie" << endl;
+    cout << "8. Wyszukiwanie" << endl;
+    cout << "0. Zakonczyc prace" << endl;
     a = (toI = getch()) - '0';
     switch(a){
         case 1: {
@@ -108,8 +106,8 @@ int main(){
         }
         case 2: {
             system("cls");
-            cout << "\t1. Stworzyc nowa baze" << endl;
-            cout << "\t2. Dodac plik do istniejacej bazy" << endl;
+            cout << "1. Stworzyc nowa baze" << endl;
+            cout << "2. Dodac plik do istniejacej bazy" << endl;
             cin >> freeUse;
             if(freeUse == 1){
                 if(index != NULL){
@@ -134,26 +132,26 @@ int main(){
             else{
                 system("cls");
                 if(index == NULL){
-                    cout << "\tNie ma otwartej bazy, czy chcesz stworzyc nowa?" << endl;
+                    cout << "Nie ma otwartej bazy, czy chcesz stworzyc nowa?" << endl;
                     cin.clear();
                     cin.sync();
                     answer = tolower(getch());
                     if(answer == 't'){
-                        cout << "\tPodaj nazwe pliku glownego: (bez rozszerzenia) ";
+                        cout << "Podaj nazwe pliku glownego: (bez rozszerzenia) ";
                         cin >> name;
                         index = new prepareDatabase(name + ".txt");
                         index->saveBase();
                         system("pause");
                     }
                     else{
-                        cout << "\tAnulowano otwieranie nowej bazy" << endl;
+                        cout << "Anulowano otwieranie nowej bazy" << endl;
                         system("pause");
                     }
                 }
                 if(index != NULL){
                 cin.clear();
                 cin.sync();
-                cout << "\tPodaj nazwe dodawanego pliku: ";
+                cout << "Podaj nazwe dodawanego pliku: ";
                 getline(cin, temp);
                 size_t *find = new size_t(temp.find(".txt"));
                 if(*find == string::npos){
@@ -164,8 +162,8 @@ int main(){
                 index->saveBase();
                 file.push_back(new Database(temp));
                 cFI = file.size() - 1;
-               // file[cFI]->saveFile(file[cFI]->getName());
-                cout << "\tZaleca sie dodanie rekordu do pliku przed dalszymi operacjami" << endl << "\t";
+                file[cFI]->saveFile(file[cFI]->getName());
+                cout << "Zaleca sie dodanie rekordu do pliku przed dalszymi operacjami" << endl << "";
                 system("pause");
                 }
 
@@ -174,13 +172,13 @@ int main(){
         }
         case 3: {
             if(index == NULL){
-                cout << "\tNie otworzono bazy.\n\t";
+                cout << "Nie otworzono bazy.\n";
                 system("pause");
                 break;
             }
             system("cls");
-            cout << "\t1. Wyswietlic caly plik" << endl;
-            cout << "\t2. Wyswietlic pojedyncza linie" << endl;
+            cout << "1. Wyswietlic caly plik" << endl;
+            cout << "2. Wyswietlic pojedyncza linie" << endl;
             cin >> freeUse;
             if(file.size() == 0)
                 cout << "Nie utworzony bazy, nie ma co wyswietlic" << endl;
@@ -251,29 +249,30 @@ int main(){
             break;
         }
         case 4: {
-            if(index == NULL){
-                cout << "\tNie otworzono bazy.\n\t";
+            if(index == NULL || file[cFI]->getNumRows() <= 1){
+                cout << "Nie otworzono bazy/Baza jest pusta.\n";
                 system("pause");
                 break;
             }
-            cout << "\t\t\t Edytowanie" << endl;
+            cout << " Edytowanie" << endl;
             system("cls");
             fflush(stdin);
-            cout << "\t\t 1. Dodaj pojedynczy rekord" << endl;
-            cout << "\t\t 2. Dodaj wiele rekordow" << endl;
-            cout << "\t\t 3. Usun rekord" << endl;
-            cout << "\t\t 3. Powrot do glownego menu" << endl;
-            char* tempSwitch = new char;
-            cin >> *tempSwitch;
+            cout << "1. Dodaj pojedynczy rekord" << endl;
+            cout << "2. Dodaj wiele rekordow" << endl;
+            cout << "3. Usun rekord" << endl;
+            cout << "4. Edytuj rekord" << endl;
+            cout << "5. Powrot do glownego menu" << endl;
+            char *tempSwitch = new char;
+            cin >> freeUse;
             cin.ignore();
-            switch(*tempSwitch){
-                case '1':{
+            switch(freeUse){
+                case 1:{
                     if(headers.size() == 0){
                         cout << "Baza jest pusta, podaj naglowki ( id dodawane automatycznie, q aby przerwaæ)" << endl;
                         tempBeforePush.push_back("id");
                         do{
                             cout << "Podaj nazwe kolumny: ";
-                            cin >> temp;
+                            getline(cin, temp);
                             if(temp != "q" && temp != "Q" && temp != "id" && temp != "ID")
                                 tempBeforePush.push_back(temp);
                         }while(temp != "q" && temp != "Q");
@@ -303,9 +302,40 @@ int main(){
                     toPush.clear();
                     break;
                 }
-                case '2':{
+                case 2:{
+                    if(headers.size() == 0){
+                        cout << "Baza jest pusta, podaj naglowki ( id dodawane automatycznie, q aby przerwaæ)" << endl;
+                        tempBeforePush.push_back("id");
+                        do{
+                            cout << "Podaj nazwe kolumny: ";
+                            cin >> temp;
+                            if(temp != "q" && temp != "Q" && temp != "id" && temp != "ID")
+                                tempBeforePush.push_back(temp);
+                        }while(temp != "q" && temp != "Q");
+                        toPush.push_back(tempBeforePush);
+                        headers = tempBeforePush;
+                        tempBeforePush.clear();
+                    }
                     do{
-                        //file[cFI]->addRow();
+                        tempBeforePush.push_back(to_string(file[cFI]->getLastID()));
+                        for(int i = 1; i < headers.size(); i++){
+                            if (temp != "q" && temp != "Q"){
+                                cout << headers[i] << " : ";
+                                cin >> temp;
+                                if (temp != "q" && temp != "Q"){
+                                    tempBeforePush.push_back(temp);
+                                    temp = "";
+                                }
+                                else
+                                    tempBeforePush.push_back(" ");
+                            }
+                            else
+                                tempBeforePush.push_back(" ");
+                        }
+                        toPush.push_back(tempBeforePush);
+                        file[cFI]->addRow(toPush);
+                        tempBeforePush.clear();
+                        toPush.clear();
                         cout << "Chcesz dodac nastepna linie? (t/n)";
                         *tempSwitch = getch();
                         if(tolower(*tempSwitch) != 't' && tolower(*tempSwitch) != 'n')
@@ -313,7 +343,8 @@ int main(){
                     }while(tolower(*tempSwitch) == 't');
                     break;
                 }
-                case '3':{system("cls");
+                case 3 :{
+                    system("cls");
                     cout << "Wiersz: ";
                     for(int i = 0; i < headers.size(); i++)
                         cout << "|" << setw(file[cFI]->columnWidth[i] + 1) << headers[i];
@@ -362,26 +393,68 @@ int main(){
                     }
                 system("pause");
                 }
+            case 4 :{
+                freeUse = 0;
+                headers = file[cFI]->getHeaders();
+                singleRow = file[cFI]->getOneRow('f');
+                    while(true){
+                        for(int i = 0; i < headers.size(); i++)
+                            cout << "|" << setw(file[cFI]->columnWidth[i] + 1) << headers[i];
+                        cout << endl;
+                        int z = 0;
+                        for(int i = 0; i < singleRow.size(); i++)
+                            cout << "|" << setw(file[cFI]->columnWidth[i] + 1) << singleRow[i];
+                        cout << endl;
+                        switch((z = getch())){
+                        case UP:
+                            singleRow.clear();
+                            singleRow = file[cFI]->getOneRow('p');
+                            break;
+                        case DOWN:
+                            singleRow.clear();
+                            singleRow = file[cFI]->getOneRow('n');
+                            break;
+                        case ENTER:
+                            cout << "Ktora kolumne chcesz zmienic?: ";
+                            getline(cin, temp);
+                            cout << "Podaj nowa wartosc: ";
+                            getline(cin, temp2);
+                            if(file[cFI]->changeValue(temp, temp2))
+                                cout << "Zmieniono wartosc";
+                            else
+                                cout << "Blad zmiany, wartosc nie ulegla zmianie";
+                            cin.get();
+                            singleRow.clear();
+                            break;
+                        }
+                        if(singleRow.empty()){
+                            cout << "Nacisnij enter aby zakonczyc" << endl;
+                            z = getch();
+                            if(z == ENTER)
+                                break;
+                            else
+                                file[cFI]->resetRRC();
+                        }
+                        system("cls");
+                    }
+                    file[cFI]->resetRRC();
+
             }
-            getch();
+            }
             delete tempSwitch;
             break;
         }
         case 5: {
-
-        break;
-        }
-        case 6: {
             if(index == NULL){
-                cout << "\tNie otworzono bazy.\n\t";
+                cout << "Nie otworzono bazy.\n";
                 system("pause");
                 break;
             }
             system("cls");
-            cout << "\t1. Zapis do tego samego pliku" << endl;
-            cout << "\t2. Zapis do innego pliku" << endl;
-            cin >> *swNumber;
-            switch(*swNumber){
+            cout << "1. Zapis do tego samego pliku" << endl;
+            cout << "2. Zapis do innego pliku" << endl;
+            cin >> freeUse;
+            switch(freeUse){
                 case 1:
                     error = new int;
                     *error = file[cFI]->saveFile(file[cFI]->getName());
@@ -412,16 +485,16 @@ int main(){
             }
             break;
         }
-        case 7: {
-            if(index == NULL){
-                cout << "\tNie otworzono bazy.\n\t";
+        case 6: {
+            if(index == NULL || file[cFI]->getNumRows() <= 1){
+                cout << "Nie otworzono bazy/Baza jest pusta.\n";
                 system("pause");
                 break;
             }
             system("cls");
-            cout << "\t1. Poprzedni plik" << endl;
-            cout << "\t2. Nastepny plik" << endl;
-            cout << "\t3. Wpisac numer pliku" << endl;
+            cout << "1. Poprzedni plik" << endl;
+            cout << "2. Nastepny plik" << endl;
+            cout << "3. Wpisac numer pliku" << endl;
             cin >> freeUse;
             switch(freeUse){
                 case 1:
@@ -452,7 +525,7 @@ int main(){
                     break;
                 case 3:
                     do{
-                    cout << "\tPodaj indeks pliku z zakresu pomiedzy 0 a " << file.size() - 1<< " : ";
+                    cout << "Podaj indeks pliku z zakresu pomiedzy 0 a " << file.size() - 1<< " : ";
                     cin >> freeUse;
                     if(freeUse < 0 || freeUse >= file.size())
                         cout << "Nie poprawny indeks, podaj jeszcze raz" << endl;
@@ -461,15 +534,15 @@ int main(){
                 }
             break;
         }
-        case 8: {
-            if(index == NULL){
-                cout << "\tNie otworzono bazy.\n\t";
+        case 7: {
+            if(index == NULL || file[cFI]->getNumRows() <= 1){
+                cout << "Nie otworzono bazy.\n";
                 system("pause");
                 break;
             }
             while(true){
                 system("cls");
-                cout << "\tPodaj nazwe kolumny wg ktorej sortowac: ";
+                cout << "Podaj nazwe kolumny wg ktorej sortowac: ";
                 cin >> temp;
                 freeUse = file[cFI]->sortFileBy(temp);
                 if(freeUse == 0){
@@ -499,22 +572,22 @@ int main(){
             }
             break;
         }
-        case 9: {
-            if(index == NULL){
-                cout << "\tNie otworzono bazy.\n\t";
+        case 8: {
+            if(index == NULL || file[cFI]->getNumRows() <= 1){
+                cout << "Baza jest pusta/Nie otwarto bazy.\n";
                 system("pause");
                 break;
             }
             system("cls");
-            cout << "\tNazwa kolumny: ";
+            cout << "Nazwa kolumny: ";
             cin >> temp;
             cin.clear();
             cin.sync();
-            cout << "\tZawartosc: ";
+            cout << "Zawartosc: ";
             getline(cin, temp2);
             searchResult = file[cFI] -> searchFor(temp, temp2,1);
             if(searchResult.size() == 1){
-                cout << "\tNie znaleziono wartosci" << endl;
+                cout << "Nie znaleziono wartosci" << endl;
                 system("pause");
             }
             else{

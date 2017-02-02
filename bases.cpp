@@ -210,6 +210,17 @@ bool Database::checkName(){                                             // Check
 bool Database::checkRead(){                                             // Check if file was read
     return file_read;
 };
+bool Database::changeValue(string column, string val){
+    int place = findRow(column);
+    if(place != -1){
+        base[rRC][place] = val;
+        editMethod = 1;
+        setWidth();
+        return true;
+    }
+    else
+        return false;
+};
 bool Database::setName(string name){                                    // set file name
     file_name = name;
     return true;
@@ -248,7 +259,9 @@ void Database::setWidth(){
             columnWidth.push_back(base[0][i].length());
         width_set = true;
     }
-    for(int i = 1; i < base.size(); i++){
+    for(int i = 0; i < columnWidth.size(); i++)
+        columnWidth[i] = 0;
+    for(int i = 0; i < base.size(); i++){
         for(int y = 0; y < numColumns; y++)
             if(columnWidth[y] < base[i][y].length())
                 columnWidth[y] = base[i][y].length();
@@ -286,11 +299,8 @@ int Database::removeRow(int which){
     return 0;
 };
 int Database::getLastID(){
-    return stoi(base[base.size()][0]);
-};
-void Database::gotoXY(int x, int y){                                    // Method, for changing cursor position
-    COORD c;
-    c.X = x - 1;
-    c.Y = y - 1;
-    SetConsoleCursorPosition (GetStdHandle(STD_OUTPUT_HANDLE), c);
+    if(base.size() > 1)
+        return stoi(base[base.size()][0]);
+    else
+        return 1;
 };
