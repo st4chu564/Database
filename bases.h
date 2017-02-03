@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <fstream>
 #include <cstring>
+#include <string>
 #include <windows.h>
 #include <conio.h>
 #include <stdio.h>

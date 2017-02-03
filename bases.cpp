@@ -300,7 +300,7 @@ int Database::removeRow(int which){
 };
 int Database::getLastID(){
     if(base.size() > 1)
-        return stoi(base[base.size()][0]);
+        return stoi(base[base.size() - 1][0]) + 1;
     else
         return 1;
 };

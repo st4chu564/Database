@@ -1,3 +1,4 @@
+autka.txt
 baza.txt
 proba.txt
 proba2.txt

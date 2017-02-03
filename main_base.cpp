@@ -392,6 +392,7 @@ int main(){
                         }while(!singleRow.empty());
                     }
                 system("pause");
+                break;
                 }
             case 4 :{
                 freeUse = 0;
@@ -579,13 +580,16 @@ int main(){
                 break;
             }
             system("cls");
+            cout << "1. Kryterium czesciowe" << endl;
+            cout << "2. Kryterium pelne" << endl;
+            cin >> freeUse;
             cout << "Nazwa kolumny: ";
             cin >> temp;
             cin.clear();
             cin.sync();
             cout << "Zawartosc: ";
             getline(cin, temp2);
-            searchResult = file[cFI] -> searchFor(temp, temp2,1);
+            searchResult = file[cFI] -> searchFor(temp, temp2,freeUse);
             if(searchResult.size() == 1){
                 cout << "Nie znaleziono wartosci" << endl;
                 system("pause");
